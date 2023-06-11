@@ -8,7 +8,9 @@ import { NaviIcon } from "@/components/icons/NaviIcon";
 import type { PageList } from "@/types/components";
 
 export const PrimaryNavi = () => {
-  const links: Array<PageList> = ['rhythm','code', 'scale','tuning'];
+  const links: Array<PageList> = ['rhythm','code', 'scale',
+  // 'tuning'
+];
   const pathname = useLocation().pathname;
 
   return (
