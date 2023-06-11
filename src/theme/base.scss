@@ -1,0 +1,94 @@
+@import url('./reset.scss');
+
+@font-face {
+     src: url("./../assets/font/Montserrat-ExtraLight.woff") format("woff");
+     font-family: "Montserrat";
+     font-style: 200;
+     font-display: swap;
+   }
+
+:root {
+ --color-dark-blue:#16182F;
+ --color-red: #a7183e;
+ --color-light-blue:#00d2ff;
+ --color-blue: #4985BD;
+ --color-dark-blue : #5353B2;
+ --color-gray: #707070;
+ --color-black: #1f1f1f;
+ --color-l-gray:#b6b6b6;
+ --color-white:#fff;
+ --color-bg: #16182F;
+
+ --font-en :	'Montserrat';
+ --font-primary : var(--color-white);
+ --primary-border : rgba(255, 255, 255, 0.3);
+ --primary-gradient:linear-gradient(to left,#5353B2,#3FAEC6);
+}
+
+*:focus-visible{
+  outline: 1px solid var(--color-light-blue);
+}
+
+html{
+  min-height: 100vh;
+}
+
+body {
+ box-sizing: border-box;
+ font-family: '游ゴシック体', YuGothic, 'Yu Gothic M', '游ゴシック Medium', 'Yu Gothic Medium',
+   'ヒラギノ角ゴ ProN W3', 'Hiragino Kaku Gothic ProN W3', HiraKakuProN-W3, 'ヒラギノ角ゴ ProN',
+   'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ Pro', 'Hiragino Kaku Gothic Pro', 'メイリオ', Meiryo,
+   Osaka, 'ＭＳ Ｐゴシック', 'MS PGothic', 'Helvetica Neue', HelveticaNeue, Helvetica, Arial,
+   'Segoe UI', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+   'Noto Color Emoji';
+ font-weight: 300;
+ background:var(--color-bg);
+ color: var(--font-primary);
+ padding-bottom: vh(730,120);
+ font-size: vw(375,14);
+ min-height: 100vh;
+ @include media('s'){
+   font-size:rem(14);
+ }
+
+}
+ .input-area{
+ @include media('lg'){
+   display: flex;
+   flex-flow: row nowrap;
+   justify-content: center;
+ }
+}
+ .control-area{
+ margin-top: vh(724,22);
+ width:vw(375,300);
+ margin-left: auto;
+ margin-right : auto;
+ max-width: rem(300);
+
+ @include media('lg'){
+   margin-top: vh(1000,68);
+   width: vw(1280,800);
+   max-width: rem(800);
+ }
+}
+
+.inline-block{
+	display: inline-block;
+}
+.upper{
+	text-transform: uppercase;
+}
+.cap{
+	text-transform: capitalize;
+}
+
+
+input[type="number"]::-webkit-outer-spin-button, 
+input[type="number"]::-webkit-inner-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+} 
+input[type="number"] { 
+-moz-appearance:textfield; 
+} 
