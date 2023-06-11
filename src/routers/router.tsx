@@ -21,7 +21,7 @@ export const Router = () => {
           <Route path="rhythm" element={<Rhythm />} />
           <Route path="code" element={<Code/>} />
           <Route path="scale" element={<Scale />} />
-          <Route path="tuning" element={<Tuning />} />
+          {/* <Route path="tuning" element={<Tuning />} /> */}
           <Route path="*" element={<Rhythm />} />
         </Route>
       </Routes>
