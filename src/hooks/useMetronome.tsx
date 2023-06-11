@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import {  useEffect, useRef, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import * as Tone  from 'tone';
 import { css } from "@emotion/react";
@@ -26,7 +26,7 @@ export const useMetronome = () =>{
       }
     }).toDestination()
   )
-
+   
   useEffect(()=>{
     Tone.Transport.bpm.value = bpmNumber
   },[bpmNumber])
@@ -66,21 +66,20 @@ export const useMetronome = () =>{
 
   const PrimaryMetronomeArea = () => {
     return(
-      <div css={countWrap} ref={countRef}>
+      <div css={mCountWrap} ref={countRef}>
       {metronomeBeats[selectedMetroBeat].value.map((_,index)=>
       <span css={[
-        count,
+        mCount,
       ]} key={index}></span>
       )}
       </div>
     )
   }
-
   return {onPlayMetronome,onStopMetronome,PrimaryMetronomeArea}
 }
 
 
-const countWrap = css`
+const mCountWrap = css`
   width: ${size.vw(375, 240)};
   margin-left: auto;
   margin-right: auto;
@@ -95,7 +94,7 @@ const countWrap = css`
   }
 `;
 
-const count = css`
+const mCount = css`
   height: ${size.vw(375, 30)};
   width: ${size.vw(375, 30)};
   background: var(--primary-border);

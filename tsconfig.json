@@ -16,6 +16,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true ,
     "jsxImportSource": "@emotion/react",
     "types": ["@emotion/react/types/css-prop"], 
     /* Linting */

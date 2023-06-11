@@ -4,18 +4,17 @@ import { Rhythm } from "../pages/Rhythm";
 import { Code } from "../pages/Code";
 import { Scale } from "../pages/Scale";
 import { Tuning } from "../pages/Tuning";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useRhythmPlayer } from "@/hooks/useRhythmPlayer";
 
-import { PlayingNavi } from "@/components/navis/PlayIngNavi";
-import { RhythmArea } from "@/components/pages/rhythm/RhythmArea";
-import { css } from "@emotion/react";
 
 
 export const Router = () => {
   const location = useLocation()
+  const {MinRhythmPlayer,PrimaryRhythmPlayer} = useRhythmPlayer()
   return (
-    <AnimatePresence mode="sync">
+    <>
+    <AnimatePresence mode="wait" initial={false}>
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={ <PrimaryLayout/>} >
           <Route index element={<Rhythm />} />
@@ -26,7 +25,30 @@ export const Router = () => {
           <Route path="*" element={<Rhythm />} />
         </Route>
       </Routes>
-      </AnimatePresence>
+    </AnimatePresence>
+    <AnimatePresence mode="wait" initial={false}>
+    {location.pathname === '/rhythm' ||  location.pathname === '/' 
+    ?<motion.div 
+    key="PrimaryRhythmPlayer"
+    initial={{opacity:0,y:100 ,zIndex:0}}
+    animate={{opacity:1,y:0 ,zIndex:1}}
+    exit={{opacity:0,y:100 ,zIndex:0}}
+    transition={{duration:.2}}
+    style={{position:"relative"}}>
+      <PrimaryRhythmPlayer/>
+    </motion.div> 
+    :<motion.div
+    key="MinRhythmPlayer"
+    initial={{opacity:0,y:0 ,zIndex:0}}
+    animate={{opacity:1,y:0 ,zIndex:1}}
+    exit={{opacity:0,y:0 ,zIndex:0}}
+    transition={{duration:.2}}
+    style={{position:"relative"}}>
+      <MinRhythmPlayer />
+    </motion.div> 
+    }
+    </AnimatePresence>
+    </>
   );
 };
 

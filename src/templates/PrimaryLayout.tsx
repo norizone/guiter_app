@@ -1,20 +1,16 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 import { PrimaryNavi } from "@/components/navis/PrimaryNavi";
-
-import { useRhythmPlayer } from "@/hooks/useRhythmPlayer";
+import { Suspense } from "react";
 
 export const PrimaryLayout = () => {
-  const {MinRhythmPlayer,PrimaryRhythmPlayer} = useRhythmPlayer()
 
-  const location = useLocation();
   return (
     <div>
       <PrimaryNavi />
-      <Outlet />
-
-      <PrimaryRhythmPlayer/>
-      <MinRhythmPlayer />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Outlet />
+      </Suspense>
     </div>
   )
 }

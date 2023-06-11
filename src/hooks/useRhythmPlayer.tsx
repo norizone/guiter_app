@@ -5,6 +5,8 @@ import { useMetronome } from './useMetronome';
 import { useDrams } from "./useDrams";
 import { mq, size } from "@/theme/cssFunctions"
 import { css } from "@emotion/react"
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export const useRhythmPlayer = () =>{
   const [isPlay,setIsPlay] = useRecoilState<boolean>(IsRhythmPlaying);
@@ -12,6 +14,12 @@ export const useRhythmPlayer = () =>{
   const bpmNumber = useRecoilValue(bpmNumberState);
   const {onPlayMetronome,onStopMetronome,PrimaryMetronomeArea} = useMetronome()
   const {PrimaryDramsArea,onPlayDrams,onStopDrams} = useDrams();
+
+  useEffect(()=>{
+    onStop();
+  }
+  ,[rhythmType])
+
 
   const onPlay = ()=>{
     if(isPlay)return;
@@ -29,12 +37,9 @@ export const useRhythmPlayer = () =>{
   const MinRhythmPlayer = ()=>{
     return(
       <div css={payingNavi}>
-      <div css={inner}>
+      <Link to="rhythm" css={inner}>
         <div css={data}> 
           <p css={title}>{rhythmType ? 'Drams' : 'Metronome' }</p>
-          {/* {!rhythmType && 
-          <p css={beat}>{mBeatSets[selectMBeat].name}</p>
-          } */}
           <p css={bpm}>BPM : {bpmNumber}</p>
         </div>
         <button type="button" css={[
@@ -43,18 +48,24 @@ export const useRhythmPlayer = () =>{
         ]}
         onClick={()=> isPlay ? onStop() : onPlay() }
         ></button>
-      </div>
+      </Link>
     </div>
     )
   }
   
-
-
   const PrimaryRhythmPlayer = ()=>{
     return(
-      !rhythmType 
+      <div>
+      { !rhythmType 
       ?<PrimaryMetronomeArea/>
-      :<PrimaryDramsArea/>
+      :<PrimaryDramsArea/>}
+      <button css={btnStyle} type="button" onClick={()=>{ !isPlay? onPlay() : onStop()}}>
+        <span css={[
+            btnIcon, 
+            isPlay ? stop : play
+            ]}></span>
+      </button>
+    </div>
     )
   }
 
@@ -67,14 +78,14 @@ const payingNavi = css`
   bottom:${size.vw(375, 58)};
   width:100%;
   z-index:100;
-  height:${size.vw(375,40)};
+  height:${size.vw(375,44)};
   background:rgba(3, 7 ,30 , .7);
   border-bottom: 1px solid var(--color-light-blue);
   backdrop-filter: blur(5px);
   font-family:var(--font-en);
   ${mq('s')}{
     bottom: ${size.rem(58)};
-    height:${size.rem(40)}
+    height:${size.rem(44)}
   }
   ${mq('lg')}{
     bottom:0;
@@ -119,16 +130,23 @@ const bpm = css`
 ${baseFonts}
 `
 
+const basePlayIcon = css`
+  	clip-path: polygon(100% 50%, 100% 50%, 100% 50%, 0 100%, 0 50%, 0 0);
+`
+const baseStopIcon = css`
+    clip-path: polygon(0 ,0, 0 ,0);
+`
+
 const iconPlay = css`
   &::after{
-		clip-path: polygon(100% 50%, 100% 50%, 100% 50%, 0 100%, 0 50%, 0 0);
+    ${basePlayIcon};
     margin-left:2px;
   }
 `
 
 const iconStop = css`
   &::after{
-		clip-path: polygon(0 ,0, 0 ,0);
+		${baseStopIcon};
   }
 `
 
@@ -159,4 +177,33 @@ const icon = css`
       content:'';
       z-index:1;
     }
+`
+
+
+const btnStyle = css`
+  	width: 240px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 40px;
+		border-radius: 30px;
+		background: var(--primary-gradient);
+		border: 1px solid var(--color-gray);
+		margin-left:auto ;
+		margin-right: auto;
+`
+const btnIcon = css`
+    height: 15px;
+    width: 15px;
+    background: var(--color-white);
+    display: block;
+    transition: clip-path .1s linear;
+`
+
+const play = css`
+		${basePlayIcon}
+`
+
+const stop = css`
+		${baseStopIcon}
 `

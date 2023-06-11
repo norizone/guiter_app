@@ -9,8 +9,8 @@ export const Code = () => {
     initial={{opacity:0,y:0 ,zIndex:1}}
     animate={{opacity:1,y:0 ,zIndex:1}}
     exit={{opacity:0,y:0 ,zIndex:0}}
-    transition={{duration:.4}}
-    // style={{position:"absolute",top:0,left:0,width:'100%',height:'max-content'}}
+    transition={{duration:.2}}
+    style={{position:"relative"}}
     >
       <PrimaryHeadline>Code</PrimaryHeadline>
       <InputArea/>

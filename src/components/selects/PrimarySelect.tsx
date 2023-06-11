@@ -65,6 +65,7 @@ const titleStyle = css`
 const selectWrapStyle = css`
     position: relative;
     width:${size.p(300,230)};
+    min-width: max-content;
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
@@ -94,7 +95,7 @@ const selectBoxStyle = css`
   	border: 1px solid var(--primary-border);
     width: 100%;
     border-radius: 30px;
-    padding: ${size.rem(6)} 1em;
+    padding: ${size.rem(6)} 1.6em ${size.rem(6)} 1em;
     font-size: ${size.rem(14)};
     letter-spacing: ${size.ls(60)};
     font-weight: 400;

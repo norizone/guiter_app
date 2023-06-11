@@ -54,7 +54,6 @@ export const FretBoardContents = () =>{
 
 
 const fretWrap =css`
-    user-select: none;
     margin-top: ${size.vw(375,24)};
 		overflow-x: auto;
 		width: auto;
@@ -91,6 +90,7 @@ const numberRow = css`
     }
 `
 const numberBox = css`
+    user-select: none;
     width: ${size.rem(70)};
     padding-right: ${size.rem(10)};
     text-align: center;

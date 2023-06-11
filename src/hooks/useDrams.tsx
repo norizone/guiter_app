@@ -1,5 +1,6 @@
 import { createRef, useEffect, useRef, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
+import type {RefObject} from "react"
 import * as Tone from "tone";
 import { css } from "@emotion/react";
 
@@ -7,7 +8,6 @@ import { mq, size } from "@/theme/cssFunctions";
 import { bpmNumberState} from "@/stores/RhythmState";
 import { dramsState } from "@/stores/DramsState";
 
-import type {RefObject} from "react"
 
 // const cats = ['🐈','🐈‍⬛','🐆','']
 
@@ -170,11 +170,7 @@ const dramsWrap = css`
   padding-left:1em;
   display: flex;
   flex-flow: row nowrap;
-  ${mq("lg")} {
-    width: max-content;
-    margin-right: auto;
-    margin-left: auto;
-  }
+  max-width:max-content;
 `;
 
 const dramsLabels = css`
