@@ -3,7 +3,7 @@ import { PrimaryLayout } from "@/templates/PrimaryLayout";
 import { Rhythm } from "../pages/Rhythm";
 import { Code } from "../pages/Code";
 import { Scale } from "../pages/Scale";
-import { Tuning } from "../pages/Tuning";
+// import { Tuning } from "../pages/Tuning";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRhythmPlayer } from "@/hooks/useRhythmPlayer";
 

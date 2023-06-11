@@ -37,18 +37,18 @@ export const useRhythmPlayer = () =>{
   const MinRhythmPlayer = ()=>{
     return(
       <div css={payingNavi}>
-      <Link to="rhythm" css={inner}>
-        <div css={data}> 
+      <div css={inner}>
+        <Link to="rhythm" css={data}> 
           <p css={title}>{rhythmType ? 'Drams' : 'Metronome' }</p>
           <p css={bpm}>BPM : {bpmNumber}</p>
-        </div>
+        </Link>
         <button type="button" css={[
           isPlay ? iconStop : iconPlay,
           icon,
         ]}
         onClick={()=> isPlay ? onStop() : onPlay() }
         ></button>
-      </Link>
+      </div>
     </div>
     )
   }
@@ -122,9 +122,9 @@ const baseFonts = css`
   }
 `
 
-const beat = css`
-${baseFonts}
-`
+// const beat = css`
+// ${baseFonts}
+// `
 
 const bpm = css`
 ${baseFonts}
