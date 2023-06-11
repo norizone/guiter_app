@@ -1,16 +1,16 @@
 import { useRecoilState, useRecoilValue } from "recoil";
 import { css } from "@emotion/react";
 
-import { dramsBeatSets, metronomeBeatSets } from "@/stores/BeatSets";
-import { selectDramsBeat, selectMetronomeBeat ,selectRhythmType } from "@/stores/RhythmState";
+import {  metronomeBeatSets } from "@/stores/BeatSets";
+import {  selectMetronomeBeat ,selectRhythmType } from "@/stores/RhythmState";
 import { mq, size } from "@/theme/cssFunctions";
 
 export const SelectBeat = () => {
   const rhythmType = useRecoilValue(selectRhythmType);
   const mBeatSets = useRecoilValue(metronomeBeatSets);
   const [mSelectedBeat,setMSelectedBeat] = useRecoilState(selectMetronomeBeat);
-  const dBeatSets = useRecoilValue(dramsBeatSets);
-  const [dSelectedBeat,setDSelectedBeat] = useRecoilState(selectDramsBeat);
+  // const dBeatSets = useRecoilValue(dramsBeatSets);
+  // const [dSelectedBeat,setDSelectedBeat] = useRecoilState(selectDramsBeat);
 
   return (
     <section>

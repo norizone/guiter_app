@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { useRecoilValue , useRecoilState } from "recoil"
+import { useRecoilValue  } from "recoil"
 import { useEffect, useState ,useRef } from "react"
 import { css } from "@emotion/react"
 import { Navigation } from "swiper";

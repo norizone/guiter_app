@@ -122,9 +122,9 @@ const baseFonts = css`
   }
 `
 
-const beat = css`
-${baseFonts}
-`
+// const beat = css`
+// ${baseFonts}
+// `
 
 const bpm = css`
 ${baseFonts}

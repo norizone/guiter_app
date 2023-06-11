@@ -248,9 +248,9 @@ const pad = css`
     --btn-color : var(--color-light-blue);
   }
 `;
-const active = css`
-    --btn-color : var(--color-blue);
-`;
+// const active = css`
+//     --btn-color : var(--color-blue);
+// `;
 
 const numbers = css`
   display: flex;
