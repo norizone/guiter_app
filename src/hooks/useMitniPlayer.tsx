@@ -10,7 +10,7 @@ import { dramsBeatSets, metronomeBeatSets } from "@/stores/BeatSets";
 import { bpmNumberState } from "@/stores/RhythmState"
 
 
-export const PlayingNavi = ()=>{
+export const useMiniPlayer = ()=>{
   const isPlay = useRecoilValue(IsRhythmPlaying);
   const hasBeatType = useRecoilValue(selectRhythmType);
   const selectMBeat = useRecoilValue(selectMetronomeBeat);
@@ -18,8 +18,9 @@ export const PlayingNavi = ()=>{
   const bpmNumber = useRecoilValue(bpmNumberState);
   const { onPlay, onStop } = useRhythmPlayer();
 
-  return(
-    <div css={payingNavi}>
+  const MiniPlayer = () =>{
+    return (
+      <div css={payingNavi}>
       <div css={inner}>
         <div css={data}> 
           <p css={title}>{hasBeatType ? 'Drams' : 'Metronome' }</p>
@@ -36,7 +37,10 @@ export const PlayingNavi = ()=>{
         ></button>
       </div>
     </div>
-  )
+    );
+  }
+
+  return {MiniPlayer}
 }
 
 const payingNavi = css`

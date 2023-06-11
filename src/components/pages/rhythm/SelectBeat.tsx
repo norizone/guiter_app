@@ -12,7 +12,6 @@ export const SelectBeat = () => {
   const dBeatSets = useRecoilValue(dramsBeatSets);
   const [dSelectedBeat,setDSelectedBeat] = useRecoilState(selectDramsBeat);
 
-  
   return (
     <section>
       <div css={selectArea}>

@@ -39,19 +39,19 @@ const navStyle = css`
   left: 0;
   width: 100%;
   z-index: 100;
-  /* background: #4c4e68;*/
-  background:#03071e;
   font-family: var(--font-en);
-  height:  ${size.vw(375, 70)};
+  height:  ${size.vw(375, 58)};
+  background:rgba(3, 7 ,30 , .7);
+  backdrop-filter: blur(5px);
   ${mq('s')}{
-    height: ${size.rem(70)};
+    height: ${size.rem(58)};
   }
   ${mq('lg')}{
+    background: transparent;
     width: ${size.vw(1366, 295)};
     top: 0;
     left: inherit;
     right: ${size.vw(1366, 150)};
-    background: transparent;
   }
   ${mq('xxl')}{
     width: ${size.rem(295)};
@@ -86,9 +86,13 @@ const linkStyle = css`
   justify-content: center;
   align-items: center;
   & span {
-    margin-top:${size.rem(5)};
+    margin-top:${size.rem(4)};
   }
   & svg {
+    width:${size.vw(375,20)};
+    max-width:${size.rem(20)};
+    margin-inline: auto;
+    vertical-align:bottom;
     ${mq('lg')}{
       display: none;
     }

@@ -78,5 +78,5 @@ export const dramsState = atom<Array<DramsState>>({
       volume:0,
     },
   ],
-  // effects_UNSTABLE:[persistAtom]
+  effects_UNSTABLE:[persistAtom]
 });

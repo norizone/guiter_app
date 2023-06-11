@@ -11,14 +11,13 @@ import type {RefObject} from "react"
 
 // const cats = ['🐈','🐈‍⬛','🐆','']
 
-/* useRefの初期値にdramsValuesを入れたい そのあたり調整する */
 export const useDrams = () => {
-  const [isCat,setIsCat] = useState(false)
+  // const [isCat,setIsCat] = useState(false)
   const [dramsValues,setDramsValues] = useRecoilState(dramsState);
   const countRef = useRef<RefObject<HTMLLIElement>[]>([]);
   const countParentRef = useRef<HTMLUListElement>(null)
   const bpmNumber = useRecoilValue(bpmNumberState);
-  const playValues = useRef<any>()
+  const playValues = useRef(dramsValues)
   const [drams] = useState<Tone.Sampler>(
     new Tone.Sampler(
       {
@@ -33,11 +32,7 @@ export const useDrams = () => {
         release:.9
     }).toDestination()
   )
-
-  useEffect(()=>{
-    playValues.current=dramsValues
-  },[])
-
+  
   useEffect(()=>{
     dramsValues.map((_,key)=>{
       countRef.current[key] = createRef<HTMLLIElement>()
@@ -47,11 +42,6 @@ export const useDrams = () => {
   useEffect(()=>{
     Tone.Transport.bpm.value = bpmNumber
   },[bpmNumber])
-
-  // useEffect(()=>{
-  //   const newValue = dramsBeats[selectedMetroBeat].value;
-  //   newValue&&newValue.length>0&&setThisBeat(newValue)
-  // },[dramsBeats,selectedMetroBeat])
 
   const handlerCounterStyle = (thisCount:number,index:number,isSound:0|1)=>{
     if( !countRef.current[index].current ||!countRef.current[index].current?.children)return;
@@ -79,14 +69,26 @@ export const useDrams = () => {
   //   // drams.connect(soundFilter)
   // },[drams])
 
-  const onPadClick = (patternValue:0|1 , dramsIndex:number , patternIndex:number)=>{
-      const newDrams = [...playValues.current];
-      const newPattern = [...newDrams[dramsIndex].pattern];
-      newPattern[patternIndex] = !patternValue ? 1 : 0;
-      newDrams[dramsIndex] = { ...newDrams[dramsIndex], pattern: newPattern };
-      // この値をuseFerにするか?
-      playValues.current = newDrams
-  }
+  const onPadClick = (event:React.MouseEvent<HTMLButtonElement> , dramsIndex:number , patternIndex:number 
+    )=>{
+      const {current} = playValues
+      const prevPatternValue = current[dramsIndex].pattern[patternIndex]
+      const target = event.currentTarget;
+      const newValue:0|1 = !prevPatternValue ? 1 : 0;
+      prevPatternValue===0 ? target.classList.add('active') : target.classList.remove('active');
+      const newCurrent = [
+        ...current.slice(0,dramsIndex),{
+          ...current[dramsIndex],
+          pattern:[
+            ...current[dramsIndex].pattern.slice(0,patternIndex),
+            newValue ,
+            ...current[dramsIndex].pattern.slice(patternIndex+1)
+          ]
+        },
+        ...current.slice(dramsIndex+1)
+      ];
+      playValues.current = newCurrent
+      }
 
   const onPlayDrams = () =>{
     if(drams.loaded){
@@ -108,20 +110,21 @@ export const useDrams = () => {
   const onStopDrams = () =>{
     Tone.Transport.stop();
     Tone.Transport.cancel();
+    setDramsValues(playValues.current);
   }
 
   const PrimaryDramsArea = () => {
     return (
       <div css={dramsWrap}>
         <ul css={dramsLabels}>
-          {playValues.current?.map((d, index) => (
+          {playValues.current.map((d, index) => (
             <li css={[dramsLabel]} key={index}>
               {d.name}
             </li>
           ))}
         </ul>
         <ul css={padWrap} ref={countParentRef}>
-          {playValues.current?.map((d, dIndex) => (
+          {playValues.current.map((d, dIndex) => (
             <li ref={countRef.current[dIndex]}
             key={dIndex} css={[
               css`
@@ -131,12 +134,13 @@ export const useDrams = () => {
               pads,
               ]}>
               {d.pattern.map((p, pIndex) => (
-                <span key={pIndex} css={[
-                  pad, p && active,
-                  pIndex === 7 && denominator
+                <button key={pIndex} css={[
+                  pad, 
+                  pIndex === 7 && denominator,
                 ]}
-                onClick={()=>onPadClick(p,dIndex,pIndex)}
-                ></span>
+                className={p ? 'active' :'' }
+                onClick={(e)=>onPadClick(e,dIndex ,pIndex )}
+                ></button>
               ))}
             </li>
           ))}
@@ -154,18 +158,16 @@ export const useDrams = () => {
     );
   };
 
-  return {
-    // onPlayDrams,onStopDrams,
-    onPlayDrams, PrimaryDramsArea,
-  };
+  return { onStopDrams,onPlayDrams, PrimaryDramsArea,};
 };
 
 //--- style ----
 const dramsWrap = css`
   margin-top: ${size.vh(728, 30)};
   margin-bottom: ${size.vh(728, 35)};
-  margin-right: calc(50% - 50vw);
-  margin-left: calc(50% - 50vw);
+  margin-right: auto;
+  margin-left: auto;
+  padding-left:1em;
   display: flex;
   flex-flow: row nowrap;
   ${mq("lg")} {
@@ -179,18 +181,21 @@ const dramsLabels = css`
   border-top: 1px solid var(--primary-border);
   border-bottom: 1px solid var(--primary-border);
   border-right: 1px solid var(--primary-border);
+  border-left: 1px solid var(--primary-border);
 `;
 
 const dramsLabel = css`
-  height: ${size.vw(375, 49)};
+  height: ${size.vw(375, 43)};
   font-family: var(--font-en);
-  font-size: ${size.vw(375, 16)};
+  font-size: ${size.vw(375, 14)};
   display: flex;
   align-items: center;
+  min-width:4em;
+  padding-left: 0.5em;
   border-bottom: 1px solid var(--primary-border);
   ${mq("s")} {
-    height: ${size.rem(49)};
-    font-size: ${size.rem(16)};
+    height: ${size.rem(43)};
+    font-size: ${size.rem(14)};
   }
 `;
 
@@ -208,8 +213,9 @@ const pads = css`
 `;
 
 const pad = css`
-  width: ${size.vw(375, 52)};
-  padding: ${size.vw(375, 12)} 0;
+  --btn-color : var(--primary-border);
+  width: ${size.vw(375, 42)};
+  padding: ${size.vw(375, 6)} 0;
   cursor: pointer;
   position: relative;
   display: flex;
@@ -218,36 +224,36 @@ const pad = css`
   box-sizing: border-box;
   border-right: 1px solid var(--primary-border);
   ${mq("s")} {
-    width: ${size.rem(52)};
-    padding: ${size.rem(12)} 0;
+    width: ${size.rem(42)};
+    padding: ${size.rem(6)} 0;
   }
   &.denominator {
     border-right: 1px solid #fff;
   }
   &::before {
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
-    background: var(--primary-border);
-    width: ${size.vw(375, 24)};
+    background: var(--btn-color);
+    height: ${size.vw(375, 30)};
+    width: ${size.vw(375, 30)};
     display: block;
     content: "";
     border-radius: 5px;
-    height: ${size.vw(375, 24)};
-    box-shadow:0px 0px 2px 1px rgba(0,0,0,.3) inset;
+    box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.4) inset;
+    overflow:hidden;
     ${mq("s")} {
-      width: ${size.rem(24)};
-      height: ${size.rem(24)};
+      width: ${size.rem(30)};
+      height: ${size.rem(30)};
     }
   }
+  &.active{
+    --btn-color : var(--color-blue);
+  }
   &.now {
-    &::before {
-      background: var(--color-light-blue);
-    }
+    --btn-color : var(--color-light-blue);
   }
 `;
 const active = css`
-  &::before {
-    background: var(--color-blue);
-  }
+    --btn-color : var(--color-blue);
 `;
 
 const numbers = css`
@@ -258,11 +264,11 @@ const numbers = css`
   border-right: 1px solid var(--color-white);
 `;
 const number = css`
-  width: ${size.vw(375, 52)};
+  width: ${size.vw(375, 42)};
   text-align: center;
   border-right: 1px solid var(--primary-border);
   ${mq("s")} {
-    width: ${size.rem(52)};
+    width: ${size.rem(42)};
   }
 `;
 

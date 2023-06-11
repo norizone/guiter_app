@@ -31,7 +31,7 @@ const wrapStyle = css`
 const inputWrapStyle = css`
   display:flex ;
   flex-flow : column nowrap;
-  row-gap: ${size.vw(375,16)};
+  row-gap: ${size.rem(16)};
   ${mq('lg')}{
     display: flex;
     flex-flow: row nowrap;
