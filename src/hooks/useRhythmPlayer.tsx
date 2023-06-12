@@ -160,12 +160,15 @@ const iconPlay = css`
   &::after{
     ${basePlayIcon};
     margin-left:2px;
+    background: var(--color-white);
+
   }
 `
 
 const iconStop = css`
   &::after{
 		${baseStopIcon};
+    background: var(--color-light-blue);
   }
 `
 
@@ -187,9 +190,8 @@ const icon = css`
    }
     &::after{
       position:absolute;
-      background: var(--color-white);
-      height: 10px;
-      width: 10px;
+      height: 8px;
+      width: 8px;
       top:auto;
       left:auto;
       display:block;
