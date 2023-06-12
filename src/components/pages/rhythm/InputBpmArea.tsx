@@ -140,7 +140,7 @@ const bpmBarWrap = css`
 					height: 100%;
 					max-width: 100%;
 					min-width: 0%;
-					width: var(--bar-width);
+					width: var(--bar-width,0);
 					content: '';
 					position: absolute;
 					top: 0;
