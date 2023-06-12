@@ -36,7 +36,10 @@ export const useRhythmPlayer = () =>{
 
   const MinRhythmPlayer = ()=>{
     return(
-      <div css={payingNavi}>
+      <div css={[
+        payingNavi,
+        isPlay && isPlayingNavi 
+      ]}>
       <div css={inner}>
         <Link to="rhythm" css={data}> 
           <p css={title}>{rhythmType ? 'Drams' : 'Metronome' }</p>
@@ -80,9 +83,21 @@ const payingNavi = css`
   z-index:100;
   height:${size.vw(375,44)};
   background:rgba(3, 7 ,30 , .7);
-  border-bottom: 1px solid var(--color-light-blue);
+  border-bottom: 1px solid var(--primary-border);
   backdrop-filter: blur(5px);
   font-family:var(--font-en);
+  &::after{
+    position:absolute;
+    bottom:0;
+    left: 0;
+    content:'';
+    width:100%;
+    height:100%;
+    border-bottom: 1px solid var(--color-light-blue);
+    transform:scaleX(0);
+    transition: transform .1s linear;
+    transform-origin: left;
+  }
   ${mq('s')}{
     bottom: ${size.rem(58)};
     height:${size.rem(44)}
@@ -91,6 +106,14 @@ const payingNavi = css`
     bottom:0;
   }
 `
+
+const isPlayingNavi = css`
+ &::after{
+  transform:scaleX(100%)
+ }
+`
+
+
 const inner = css`
     width: ${size.vw(375, 280)};
     margin-inline: auto;
@@ -121,10 +144,6 @@ const baseFonts = css`
     font-size:${size.rem(12)};
   }
 `
-
-// const beat = css`
-// ${baseFonts}
-// `
 
 const bpm = css`
 ${baseFonts}
