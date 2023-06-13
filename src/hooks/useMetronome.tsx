@@ -12,6 +12,7 @@ export const useMetronome = () =>{
   const bpmNumber = useRecoilValue(bpmNumberState);
   const selectedMetroBeat = useRecoilValue(selectMetronomeBeat); 
   const metronomeBeats = useRecoilValue(metronomeBeatSets);
+  const [eventId,setEventId] = useState(0);
   const [thisBeat,setThisBeat] = useState(metronomeBeats[selectedMetroBeat].value);
   const [metronome] = useState<Tone.Synth>(
     new Tone.Synth({
@@ -49,14 +50,17 @@ export const useMetronome = () =>{
 
   const onPlayMetronome = () =>{
     let thisCount = 0;
-    Tone.Transport.scheduleRepeat((time)=>{
-      thisBeat[thisCount] === 2 && metronome.triggerAttackRelease("A5", "32n" , time) 
-      thisBeat[thisCount] === 1 && metronome.triggerAttackRelease("C5", "32n" ,time)
-      handlerCounterStyle(thisCount)
-      thisCount++;
-      thisCount > thisBeat.length -1 && (thisCount =0);
-    },'4n')
-    Tone.Transport.start();
+    Tone.Transport.clear(eventId)
+    setEventId(
+      Tone.Transport.scheduleRepeat((time)=>{
+        thisBeat[thisCount] === 2 && metronome.triggerAttackRelease("A5", "32n" , time) 
+        thisBeat[thisCount] === 1 && metronome.triggerAttackRelease("C5", "32n" ,time)
+        handlerCounterStyle(thisCount)
+        thisCount++;
+        thisCount > thisBeat.length -1 && (thisCount =0);
+      },'4n')
+      )
+      Tone.Transport.start();
   }
 
   const onStopMetronome = () =>{
