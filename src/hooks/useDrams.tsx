@@ -14,6 +14,7 @@ import { dramsState } from "@/stores/DramsState";
 export const useDrams = () => {
   // const [isCat,setIsCat] = useState(false)
   const [dramsValues,setDramsValues] = useRecoilState(dramsState);
+  const [eventId,setEventId] = useState(0);
   const countRef = useRef<RefObject<HTMLLIElement>[]>([]);
   const countParentRef = useRef<HTMLUListElement>(null)
   const bpmNumber = useRecoilValue(bpmNumberState);
@@ -64,9 +65,9 @@ export const useDrams = () => {
   //     frequency : 350 ,
   //     rolloff : -12 ,
   //     Q : 10 ,
-  //     gain : 1500000,
+  //     gain : 10,
   //   }).toDestination();
-  //   // drams.connect(soundFilter)
+  //   drams.connect(soundFilter)
   // },[drams])
 
   const onPadClick = (event:React.MouseEvent<HTMLButtonElement> , dramsIndex:number , patternIndex:number 
@@ -93,17 +94,20 @@ export const useDrams = () => {
   const onPlayDrams = () =>{
     if(drams.loaded){
       let thisCount = 0;
-      Tone.Transport.scheduleRepeat((time)=>{
-        playValues.current.map((v,index)=>{
-          handlerCounterStyle(thisCount,index,v.pattern[thisCount])
-          if(v.pattern[thisCount]){
-            drams.triggerAttackRelease(v.midiKey, "32n" , time) 
-          }
-        })
-        thisCount++;
-        thisCount >= 16 && (thisCount = 0);
-      },'8n')
-      Tone.Transport.start();
+      Tone.Transport.clear(eventId)
+      setEventId(
+        Tone.Transport.scheduleRepeat((time)=>{
+          playValues.current.map((v,index)=>{
+            handlerCounterStyle(thisCount,index,v.pattern[thisCount])
+            if(v.pattern[thisCount]){
+              drams.triggerAttackRelease(v.midiKey, "32n" , time) 
+            }
+          })
+          thisCount++;
+          thisCount >= 16 && (thisCount = 0);
+        },'8n')
+      )
+        Tone.Transport.start();
     }
   }
 

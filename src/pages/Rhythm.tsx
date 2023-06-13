@@ -1,9 +1,9 @@
 import { motion } from "framer-motion"
 import { PrimaryHeadline } from "@/components/headlines/PrimaryHeadline"
 import { InputBpmArea } from "@/components/pages/rhythm/InputBpmArea"
-// import { RhythmArea } from "@/components/pages/rhythm/RhythmArea"
 import { SelectRhythmTypeArea } from "@/components/pages/rhythm/SelectRhythmTypeArea"
 import { PrimaryInputsWrap } from "@/components/wraps/PrimaryInputsWrap"
+import { SelectBeat } from "@/components/pages/rhythm/SelectBeat"
 
 export const Rhythm = () => {
   return (
@@ -18,6 +18,7 @@ export const Rhythm = () => {
       <PrimaryInputsWrap>
         <SelectRhythmTypeArea/>
         <InputBpmArea/>
+        <SelectBeat/>
       </PrimaryInputsWrap>
     </motion.main>
   )

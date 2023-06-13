@@ -160,12 +160,15 @@ const iconPlay = css`
   &::after{
     ${basePlayIcon};
     margin-left:2px;
+    background: var(--color-white);
+
   }
 `
 
 const iconStop = css`
   &::after{
 		${baseStopIcon};
+    background: var(--color-light-blue);
   }
 `
 
@@ -178,6 +181,7 @@ const icon = css`
     background: rgba(255, 255, 255, 0.2);
     width: 28px;
     height:28px; 
+    z-index:1;
     border-radius: 50%;
     @media (hover:hover) {
       transition:background .1s linear;
@@ -187,14 +191,13 @@ const icon = css`
    }
     &::after{
       position:absolute;
-      background: var(--color-white);
-      height: 10px;
-      width: 10px;
+      height: 8px;
+      width: 8px;
       top:auto;
       left:auto;
       display:block;
       content:'';
-      z-index:1;
+      z-index:2;
     }
 `
 
