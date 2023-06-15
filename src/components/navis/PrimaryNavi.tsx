@@ -38,11 +38,12 @@ const currentStyle = css`
 const navStyle = css`
  position: fixed;
   bottom: 0;
+  padding-bottom: env(safe-area-inset-bottom);
   left: 0;
   width: 100%;
   z-index: 100;
   font-family: var(--font-en);
-  height:  ${size.vw(375, 58)};
+  height: calc( ${size.vw(375, 58)} + env(safe-area-inset-bottom) ) ;
   background:rgba(3, 7 ,30 , .7);
   backdrop-filter: blur(5px);
   ${mq('s')}{

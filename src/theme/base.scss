@@ -47,7 +47,6 @@ body {
  padding-bottom: vh(730,120);
  font-size: vw(375,14);
  min-height: 100vh;
- padding-bottom: env(safe-area-inset-bottom);
  @include media('s'){
    font-size:rem(14);
  }
