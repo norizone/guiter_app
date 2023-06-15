@@ -21,7 +21,8 @@
     "recoil-persist": "^4.2.0",
     "standardized-audio-context": "^25.3.46",
     "swiper": "^8.4.7",
-    "tone": "^14.8.49"
+    "tone": "^14.8.49",
+    "vite-plugin-pwa": "^0.16.4"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",
@@ -38,8 +39,8 @@
     "typescript": "^5.0.2",
     "vite": "^4.3.2"
   },
-  "volta":{
-    "node":"18.13.0",
-    "npm":"6.12.1"
+  "volta": {
+    "node": "18.13.0",
+    "npm": "6.12.1"
   }
 }
