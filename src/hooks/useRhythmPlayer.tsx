@@ -78,7 +78,7 @@ export const useRhythmPlayer = () =>{
 const payingNavi = css`
   position:fixed;
   left: 0;
-  bottom:${size.vw(375, 58)};
+  bottom:calc(${size.vw(375, 58)} + env(safe-area-inset-bottom));
   width:100%;
   z-index:100;
   height:${size.vw(375,44)};
