@@ -4,21 +4,26 @@ import type {RefObject} from "react"
 import * as Tone from "tone";
 import { css } from "@emotion/react";
 
+import resetIcon from '@/assets/img/reset.svg'
+import shuffleIcon from '@/assets/img/shuffle.svg'
 import { mq, size } from "@/theme/cssFunctions";
-import { bpmNumberState} from "@/stores/RhythmState";
-import { dramsState } from "@/stores/DramsState";
-
+import { IsRhythmPlaying,bpmNumberState} from "@/stores/RhythmState";
+import { defaultDramsState, dramsState } from "@/stores/DramsState";
+// import { useModal } from "./useModal";
 
 // const cats = ['🐈','🐈‍⬛','🐆','']
 
 export const useDrams = () => {
   // const [isCat,setIsCat] = useState(false)
+  const [isPlay,setIsPlay] = useRecoilState<boolean>(IsRhythmPlaying);
+  const defaultValues = useRecoilValue(defaultDramsState)
   const [dramsValues,setDramsValues] = useRecoilState(dramsState);
   const [eventId,setEventId] = useState(0);
-  const countRef = useRef<RefObject<HTMLLIElement>[]>([]);
-  const countParentRef = useRef<HTMLUListElement>(null)
+  const padRef = useRef<RefObject<HTMLLIElement>[]>([]);
+  const padParentRef = useRef<HTMLUListElement>(null)
   const bpmNumber = useRecoilValue(bpmNumberState);
   const playValues = useRef(dramsValues)
+  const [isReset,setIsReset] = useState(false);
   const [drams] = useState<Tone.Sampler>(
     new Tone.Sampler(
       {
@@ -33,26 +38,29 @@ export const useDrams = () => {
         release:.9
     }).toDestination()
   )
+
+  // const { Modal, openModal, closeModal } = useModal();
   
   useEffect(()=>{
     dramsValues.map((_,key)=>{
-      countRef.current[key] = createRef<HTMLLIElement>()
+      padRef.current[key] = createRef<HTMLLIElement>()
     })
-  },[dramsValues])
+    isReset&&setIsReset(false);
+  },[dramsValues,isReset])
 
   useEffect(()=>{
     Tone.Transport.bpm.value = bpmNumber
   },[bpmNumber])
 
   const handlerCounterStyle = (thisCount:number,index:number,isSound:0|1)=>{
-    if( !countRef.current[index].current ||!countRef.current[index].current?.children)return;
-    const thisRef = countRef.current[index].current ?? null
+    if( !padRef.current[index].current ||!padRef.current[index].current?.children)return;
+    const thisRef = padRef.current[index].current ?? null
     const prevCount = thisCount - 1 < 0  ? 15 : thisCount -1;
     thisRef?.children[prevCount].classList.remove('now');
     isSound&& thisRef?.children[thisCount].classList.add('now');
-    if(index===0 && countParentRef.current){
+    if(index===0 && padParentRef.current){
       const onePadWidth = thisRef?.children[0].clientWidth ?? 60
-      countParentRef.current.scrollTo({
+      padParentRef.current.scrollTo({
         top: 0,
         left: onePadWidth * thisCount,
         behavior: "auto"})
@@ -69,6 +77,29 @@ export const useDrams = () => {
   //   }).toDestination();
   //   drams.connect(soundFilter)
   // },[drams])
+
+  const onResetDrams = () =>{
+    playValues.current=defaultValues;
+    // 止めなくてもclassをつけたところを消せば行ける
+    setIsReset(true);
+    isPlay&&setIsPlay(false);
+    isPlay&&onStopDrams();
+  }
+
+  const onShuffleDrams = () =>{
+    const copyCurrent = [...playValues.current];
+    const newCurrent = copyCurrent.map((el)=>{
+      const newPattern: Array<0 | 1> = Array.from({ length: 16 }, () => Math.round(Math.random())) as Array<0 | 1>;
+      return (
+        {...el,pattern:newPattern}
+      )
+    })
+    playValues.current = newCurrent
+    setIsReset(true);
+    isPlay&&setIsPlay(false);
+    isPlay&&onStopDrams();
+  }
+
 
   const onPadClick = (event:React.MouseEvent<HTMLButtonElement> , dramsIndex:number , patternIndex:number 
     )=>{
@@ -122,14 +153,16 @@ export const useDrams = () => {
       <div css={dramsWrap}>
         <ul css={dramsLabels}>
           {playValues.current.map((d, index) => (
-            <li css={[dramsLabel]} key={index}>
+            <li css={[dramsLabel]} key={index}
+              // onClick={openModal}
+            >
               {d.name}
             </li>
           ))}
         </ul>
-        <ul css={padWrap} ref={countParentRef}>
+        <ul css={padWrap} ref={padParentRef}>
           {playValues.current.map((d, dIndex) => (
-            <li ref={countRef.current[dIndex]}
+            <li ref={padRef.current[dIndex]}
             key={dIndex} css={[
               css`
               --start-gradient: ${dIndex * .06} ;
@@ -158,16 +191,44 @@ export const useDrams = () => {
           )}
         </li>
         </ul>
+        {/* <Modal /> */}
+        <div css={btns}>
+          <button css={btn} type='button' title="reset" onClick={onResetDrams}><img src={resetIcon} alt="" /></button>
+          <button css={btn} type='button' title="shuffle" onClick={onShuffleDrams}><img src={shuffleIcon}/></button>
+        </div>
       </div>
     );
   };
 
-  return { onStopDrams,onPlayDrams, PrimaryDramsArea,};
+  return { onResetDrams,onStopDrams,onPlayDrams, PrimaryDramsArea,};
 };
 
 //--- style ----
+const btns = css`
+position:absolute;
+top:-24px;
+right:12px;
+left:auto;
+display:flex;
+flex-flow:row nowrap;
+column-gap: 1em;
+align-items:center;
+width:max-content;
+`
+
+const btn = css`
+width: 1em;
+  > img{
+    display: block;
+    width:100%;
+    height:auto;
+  }
+`
+
+
+
 const dramsWrap = css`
-  margin-top: ${size.vh(728, 30)};
+  margin-top: ${size.vh(728, 20)};
   margin-bottom: ${size.vh(728, 35)};
   margin-right: auto;
   margin-left: auto;
@@ -175,6 +236,7 @@ const dramsWrap = css`
   display: flex;
   flex-flow: row nowrap;
   max-width:max-content;
+  position:relative;
 `;
 
 const dramsLabels = css`

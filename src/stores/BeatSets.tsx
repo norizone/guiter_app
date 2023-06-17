@@ -22,17 +22,17 @@ export const dramsBeatSets = atom({
   key:'dramsBeatSets',
   default:[
     {
-      name: '4/4',
-      value: 16,
+      name: '4 note beat',
+      value: 4,
       numbers: []
     },
     {
-      name: '8/8',
-      value: 16,
+      name: '8 note beat',
+      value: 8,
       numbers: []
     },
     {
-      name: '16/16',
+      name: '16 note beat',
       value: 16,
       numbers: []
     },

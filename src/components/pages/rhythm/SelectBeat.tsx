@@ -13,8 +13,7 @@ export const SelectBeat = () => {
   // const [dSelectedBeat,setDSelectedBeat] = useRecoilState(selectDramsBeat);
 
   return (
-    <section>
-      <div css={selectArea}>
+    <section css={wrap}>
         <div css={selectWrap}>
         {!rhythmType 
         ? <><select css={select} value={mSelectedBeat} 
@@ -40,38 +39,41 @@ export const SelectBeat = () => {
             />
           </svg>
           </>
-          : null
-          //  <select css={select} value={dSelectedBeat} 
+          : <p css={select}
+          //  value={dSelectedBeat} 
           // onChange={(e)=>{setDSelectedBeat(Number(e.target.value))}}
-          // >
-          //   {dBeatSets.map((b,index)=>
-          //   <option key={index} value={index}>{b.name}</option>
-          //   )}
-          // </select>
+          >8 note beat
+            {/* {dBeatSets.map((b,index)=>
+            <option key={index} value={index}>{b.name}</option>
+            )} */}
+          </p>
           }
-        
         </div>
-      </div>
     </section>
   );
 };
 
-const selectArea = css`
+const wrap = css`
+  display: flex;
+  align-items:center;
+  justify-content: space-between;
+  height:max-content;
+  margin-top: ${size.vh(728, 20)};
   width: ${size.vw(375, 305)};
   max-width: ${size.rem(305)};
   margin-left: auto;
   margin-right: auto;
   ${mq("lg")} {
     max-width: ${size.rem(510)};
-  }
-`;
-const selectWrap = css`
-  margin-top: ${size.vh(728, 20)};
-  position: relative;
-  width: max-content;
-  ${mq("lg")} {
     margin-top: ${size.vh(1280, 55)};
   }
+  `
+
+const selectWrap = css`
+
+  position: relative;
+  width: max-content;
+
   > svg {
     position: absolute;
     right: 0;
@@ -86,6 +88,7 @@ const select = css`
   letter-spacing: 0.2em;
   width: ${size.vw(375, 78)};
   padding:.3em;
+  min-width: max-content;
   ${mq("s")} {
     width: ${size.rem(78)};
   }
