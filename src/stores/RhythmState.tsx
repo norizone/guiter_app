@@ -18,7 +18,7 @@ export const bpmNumberState = atom<number>({
 
 export const selectRhythmType = atom<0|1>({
   key:'selectRhythmType',
-  default:0,
+  default:1,
   effects_UNSTABLE:[persistAtom]
 })
 
