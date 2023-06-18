@@ -193,8 +193,8 @@ export const useDrams = () => {
         </ul>
         {/* <Modal /> */}
         <div css={btns}>
-          <button css={btn} type='button' title="reset" onClick={onResetDrams}><img src={resetIcon} alt="" /></button>
-          <button css={btn} type='button' title="shuffle" onClick={onShuffleDrams}><img src={shuffleIcon}/></button>
+          <button css={btn} type='button' title="reset" onClick={onResetDrams}><img src={resetIcon} alt="reset" width="16" height="16"/></button>
+          <button css={btn} type='button' title="shuffle" onClick={onShuffleDrams}><img src={shuffleIcon} alt="shuffle" width="16" height="16"/></button>
         </div>
       </div>
     );
