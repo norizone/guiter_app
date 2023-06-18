@@ -217,7 +217,7 @@ width:max-content;
 `
 
 const btn = css`
-width: 1em;
+width: 16px;
   > img{
     display: block;
     width:100%;
