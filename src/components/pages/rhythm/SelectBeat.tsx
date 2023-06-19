@@ -1,29 +1,40 @@
 import { useRecoilState, useRecoilValue } from "recoil";
 import { css } from "@emotion/react";
 
-import {  metronomeBeatSets } from "@/stores/BeatSets";
-import {  selectMetronomeBeat ,selectRhythmType } from "@/stores/RhythmState";
+import {  metronomeBeatSets ,dramsBeatSets} from "@/stores/BeatSets";
+import {  selectMetronomeBeat ,selectRhythmType ,selectDramsBeat } from "@/stores/RhythmState";
 import { mq, size } from "@/theme/cssFunctions";
+import { useRhythmPlayer } from "@/hooks/useRhythmPlayer";
 
 export const SelectBeat = () => {
   const rhythmType = useRecoilValue(selectRhythmType);
   const mBeatSets = useRecoilValue(metronomeBeatSets);
   const [mSelectedBeat,setMSelectedBeat] = useRecoilState(selectMetronomeBeat);
-  // const dBeatSets = useRecoilValue(dramsBeatSets);
-  // const [dSelectedBeat,setDSelectedBeat] = useRecoilState(selectDramsBeat);
+  const dBeatSets = useRecoilValue(dramsBeatSets);
+  const [dSelectedBeat,setDSelectedBeat] = useRecoilState(selectDramsBeat);
+  const {onStop} = useRhythmPlayer()
 
   return (
     <section css={wrap}>
         <div css={selectWrap}>
         {!rhythmType 
-        ? <><select css={select} value={mSelectedBeat} 
-          onChange={(e)=>{setMSelectedBeat(Number(e.target.value))}}
+        ? <select css={select} value={mSelectedBeat} 
+          onChange={(e)=>{setMSelectedBeat(Number(e.target.value));onStop();}}
           >
             {mBeatSets.map((b,index)=>
             <option key={index} value={index}>{b.name}</option>
             )}
           </select>
-            <svg
+          : <select css={select}
+           value={dSelectedBeat} 
+          onChange={(e)=>{setDSelectedBeat(Number(e.target.value));onStop();}}
+          >
+          {dBeatSets.map((b,index)=>
+            <option key={index} value={index}>{b.name}</option>
+            )} 
+          </select>
+          }
+          <svg
             xmlns="http://www.w3.org/2000/svg"
             width="8.707"
             height="5.061"
@@ -38,26 +49,12 @@ export const SelectBeat = () => {
               strokeWidth="1"
             />
           </svg>
-          </>
-          : <p css={select}
-          //  value={dSelectedBeat} 
-          // onChange={(e)=>{setDSelectedBeat(Number(e.target.value))}}
-          >8 note beat
-            {/* {dBeatSets.map((b,index)=>
-            <option key={index} value={index}>{b.name}</option>
-            )} */}
-          </p>
-          }
         </div>
     </section>
   );
 };
 
 const wrap = css`
-  display: flex;
-  align-items:center;
-  justify-content: space-between;
-  height:max-content;
   margin-top: ${size.vh(728, 20)};
   width: ${size.vw(375, 305)};
   max-width: ${size.rem(305)};
@@ -70,14 +67,14 @@ const wrap = css`
   `
 
 const selectWrap = css`
-
   position: relative;
+  z-index:0;
   width: max-content;
-
   > svg {
     position: absolute;
     right: 0;
-    top: 50%;
+    z-index:-1;
+    top: 45%;
     transform: translateX(-50%);
   }
 `;
@@ -87,7 +84,7 @@ const select = css`
   font-family: var(--font-en);
   letter-spacing: 0.2em;
   width: ${size.vw(375, 78)};
-  padding:.3em;
+  padding:.3em 1.4em .3em .3em;
   min-width: max-content;
   ${mq("s")} {
     width: ${size.rem(78)};

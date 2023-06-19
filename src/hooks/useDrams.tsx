@@ -7,7 +7,8 @@ import { css } from "@emotion/react";
 import resetIcon from '@/assets/img/reset.svg'
 import shuffleIcon from '@/assets/img/shuffle.svg'
 import { mq, size } from "@/theme/cssFunctions";
-import { IsRhythmPlaying,bpmNumberState} from "@/stores/RhythmState";
+import { IsRhythmPlaying,bpmNumberState,selectDramsBeat} from "@/stores/RhythmState";
+import { dramsBeatSets} from "@/stores/BeatSets";
 import { defaultDramsState, dramsState } from "@/stores/DramsState";
 // import { useModal } from "./useModal";
 
@@ -18,6 +19,9 @@ export const useDrams = () => {
   const [isPlay,setIsPlay] = useRecoilState<boolean>(IsRhythmPlaying);
   const defaultValues = useRecoilValue(defaultDramsState)
   const [dramsValues,setDramsValues] = useRecoilState(dramsState);
+  const dBeatSets = useRecoilValue(dramsBeatSets);
+  const dSelectedBeat = useRecoilValue(selectDramsBeat);
+  const [beatNumber,setBeatNumber] = useState<number>(dBeatSets[dSelectedBeat].value) 
   const [eventId,setEventId] = useState(0);
   const padRef = useRef<RefObject<HTMLLIElement>[]>([]);
   const padParentRef = useRef<HTMLUListElement>(null)
@@ -66,6 +70,10 @@ export const useDrams = () => {
         behavior: "auto"})
     }
   }
+
+  useEffect(()=>{
+    setBeatNumber(dBeatSets[dSelectedBeat].value)
+  },[dBeatSets,dSelectedBeat])
 
   // useEffect(()=>{
   //   const soundFilter = new Tone.Filter({
@@ -136,7 +144,7 @@ export const useDrams = () => {
           })
           thisCount++;
           thisCount >= 16 && (thisCount = 0);
-        },'8n')
+        },`${beatNumber}n`)
       )
         Tone.Transport.start();
     }
@@ -173,7 +181,7 @@ export const useDrams = () => {
               {d.pattern.map((p, pIndex) => (
                 <button key={pIndex} css={[
                   pad, 
-                  pIndex === 7 && denominator,
+                  (pIndex+1) % beatNumber === 0 && denominator,
                 ]}
                 className={p ? 'active' :'' }
                 onClick={(e)=>onPadClick(e,dIndex ,pIndex )}
@@ -185,8 +193,12 @@ export const useDrams = () => {
           {Array(16).fill('').map((_,index)=>(
             <span key={index} css={[
               number,
-              index === 7 && denominator
-            ]}>{index < 8 ? index+1 : index - 8 + 1 }</span>
+              (index+1) % (beatNumber) === 0 && denominator
+            ]}>{
+              index < beatNumber 
+              ? index+1 
+              : index - (beatNumber*Math.floor(index / beatNumber))  + 1
+               }</span>
           )
           )}
         </li>

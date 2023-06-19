@@ -29,5 +29,5 @@ export const selectMetronomeBeat =atom<number>({
 
 export const selectDramsBeat = atom<number>({
   key :'selectDramsBeat',
-  default:0
+  default:1
 })
