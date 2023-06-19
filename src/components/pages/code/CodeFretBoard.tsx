@@ -1,4 +1,4 @@
-import { useEffect, useState ,Fragment} from "react"
+import { useState ,Fragment, useLayoutEffect} from "react"
 import { css } from "@emotion/react"
 import { useRecoilValue } from "recoil";
 
@@ -27,7 +27,7 @@ export const CodeFretBoard: FC<Props> = (props) => {
     return;
   }
 
-  useEffect(()=>{
+  useLayoutEffect(()=>{
     if(processedCode?.length === 0)return;
     const numPositions = processedCode.filter((v): v is number => typeof v === 'number');
     const newMaxPosition = Math.max(...numPositions)
