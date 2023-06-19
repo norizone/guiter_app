@@ -16,7 +16,7 @@ export const SelectBeat = () => {
 
   return (
     <section css={wrap}>
-        <div css={selectWrap}>
+        <div css={[selectWrap,!rhythmType?primaryWrap:secondaryWrap]}>
         {!rhythmType 
         ? <select css={select} value={mSelectedBeat} 
           onChange={(e)=>{setMSelectedBeat(Number(e.target.value));onStop();}}
@@ -65,11 +65,18 @@ const wrap = css`
     margin-top: ${size.vh(1280, 55)};
   }
   `
+const primaryWrap = css`
+--select-width:4em;
+`;
+
+const secondaryWrap =css`
+--select-width:10em
+`;
 
 const selectWrap = css`
   position: relative;
   z-index:0;
-  width: max-content;
+  width: var(--select-width ,max-content);
   > svg {
     position: absolute;
     right: 0;
