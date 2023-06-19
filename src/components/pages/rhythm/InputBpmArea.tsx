@@ -12,7 +12,7 @@ export const InputBpmArea = () =>{
   const [bpmNumber,setBpmNumber] = useRecoilState(bpmNumberState)
   const [inputBpm,setInputBpm] = useState(`${bpmNumber}`);
   const [bpmBar,setBpmBar] = useState(maxNum);
-  const debounce = useDebounceTime(1000);
+  const debounce = useDebounceTime(300);
 
 const setBpmStates = (event:React.ChangeEvent<HTMLInputElement>)=>{
   const newValue = Math.floor(Number(event.target.value));
