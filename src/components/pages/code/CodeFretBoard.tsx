@@ -112,7 +112,7 @@ export const CodeFretBoard: FC<Props> = (props) => {
                         && noDotPositions.every(d=>d!==((numIndex+1 - maxFrets) + maxPosition)) 
                         && oneDotRow,
                       ]}>
-                      <span>{ (numIndex+1 - maxFrets) + maxPosition}</span>
+                      <span>{ (numIndex+1 - maxFrets) + maxPosition !== 0 ? (numIndex+1 - maxFrets) + maxPosition :''}</span>
                     </td>
                   ))}
                 </tr>
