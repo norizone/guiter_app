@@ -72,8 +72,12 @@ export const useDrams = () => {
   }
 
   useEffect(()=>{
+    if(dBeatSets[dSelectedBeat].value === beatNumber) return
     setBeatNumber(dBeatSets[dSelectedBeat].value)
-  },[dBeatSets,dSelectedBeat])
+    if(!isPlay)return;
+    onStopDrams();
+    setIsPlay(false)
+  },[dBeatSets,dSelectedBeat,beatNumber])
 
   // useEffect(()=>{
   //   const soundFilter = new Tone.Filter({

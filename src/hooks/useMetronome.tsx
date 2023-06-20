@@ -1,14 +1,15 @@
 import {  useEffect, useRef, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue ,useRecoilState } from 'recoil';
 import * as Tone  from 'tone';
 import { css } from "@emotion/react";
 
 import { mq, size } from "@/theme/cssFunctions";
-import { bpmNumberState, selectMetronomeBeat } from '@/stores/RhythmState';
+import { IsRhythmPlaying,bpmNumberState, selectMetronomeBeat } from '@/stores/RhythmState';
 import { metronomeBeatSets } from '@/stores/BeatSets';
 
 export const useMetronome = () =>{
   const countRef = useRef<HTMLDivElement>(null)
+  const [isPlay,setIsPlay] = useRecoilState<boolean>(IsRhythmPlaying)
   const bpmNumber = useRecoilValue(bpmNumberState);
   const selectedMetroBeat = useRecoilValue(selectMetronomeBeat); 
   const metronomeBeats = useRecoilValue(metronomeBeatSets);
@@ -34,8 +35,12 @@ export const useMetronome = () =>{
 
   useEffect(()=>{
     const newValue = metronomeBeats[selectedMetroBeat].value;
+    if(newValue === thisBeat)return
     newValue&&newValue.length>0&&setThisBeat(newValue)
-  },[metronomeBeats,selectedMetroBeat])
+    if(!isPlay)return;
+    onStopMetronome();
+    setIsPlay(false);
+  },[metronomeBeats,selectedMetroBeat,thisBeat])
 
   const handlerCounterStyle = (thisCount:number)=>{
     if(!countRef || !countRef.current?.children) return

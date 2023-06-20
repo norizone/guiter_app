@@ -129,6 +129,7 @@ const data = css`
   flex-flow:row nowrap;
   column-gap: 2em;
   align-items:end;
+  z-index:10;
 `
 
 const title = css`
