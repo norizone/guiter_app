@@ -4,7 +4,6 @@ import { css } from "@emotion/react";
 import {  metronomeBeatSets ,dramsBeatSets} from "@/stores/BeatSets";
 import {  selectMetronomeBeat ,selectRhythmType ,selectDramsBeat } from "@/stores/RhythmState";
 import { mq, size } from "@/theme/cssFunctions";
-import { useRhythmPlayer } from "@/hooks/useRhythmPlayer";
 
 export const SelectBeat = () => {
   const rhythmType = useRecoilValue(selectRhythmType);
@@ -12,14 +11,13 @@ export const SelectBeat = () => {
   const [mSelectedBeat,setMSelectedBeat] = useRecoilState(selectMetronomeBeat);
   const dBeatSets = useRecoilValue(dramsBeatSets);
   const [dSelectedBeat,setDSelectedBeat] = useRecoilState(selectDramsBeat);
-  const {onStop} = useRhythmPlayer()
 
   return (
     <section css={wrap}>
         <div css={[selectWrap,!rhythmType?primaryWrap:secondaryWrap]}>
         {!rhythmType 
         ? <select css={select} value={mSelectedBeat} 
-          onChange={(e)=>{setMSelectedBeat(Number(e.target.value));onStop();}}
+          onChange={(e)=>{setMSelectedBeat(Number(e.target.value));}}
           >
             {mBeatSets.map((b,index)=>
             <option key={index} value={index}>{b.name}</option>
@@ -27,7 +25,7 @@ export const SelectBeat = () => {
           </select>
           : <select css={select}
            value={dSelectedBeat} 
-          onChange={(e)=>{setDSelectedBeat(Number(e.target.value));onStop();}}
+          onChange={(e)=>{setDSelectedBeat(Number(e.target.value));}}
           >
           {dBeatSets.map((b,index)=>
             <option key={index} value={index}>{b.name}</option>
@@ -70,7 +68,7 @@ const primaryWrap = css`
 `;
 
 const secondaryWrap =css`
---select-width:10em
+--select-width:10em;
 `;
 
 const selectWrap = css`
