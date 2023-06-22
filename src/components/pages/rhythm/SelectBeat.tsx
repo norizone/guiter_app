@@ -88,14 +88,10 @@ const select = css`
   color: var(--color-white);
   font-family: var(--font-en);
   letter-spacing: 0.2em;
-  width: ${size.vw(375, 78)};
+  width: 100%;
   padding:.3em 1.4em .3em .3em;
   min-width: max-content;
-  ${mq("s")} {
-    width: ${size.rem(78)};
-  }
   ${mq("lg")} {
-    width: ${size.rem(78)};
     font-size: ${size.rem(18)};
   }
 `;
