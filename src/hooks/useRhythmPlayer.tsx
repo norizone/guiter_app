@@ -6,7 +6,7 @@ import { useDrams } from "./useDrams";
 import { mq, size } from "@/theme/cssFunctions"
 import { css } from "@emotion/react"
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export const useRhythmPlayer = () =>{
   const [isPlay,setIsPlay] = useRecoilState<boolean>(IsRhythmPlaying);
@@ -14,12 +14,17 @@ export const useRhythmPlayer = () =>{
   const bpmNumber = useRecoilValue(bpmNumberState);
   const {onPlayMetronome,onStopMetronome,PrimaryMetronomeArea} = useMetronome()
   const {PrimaryDramsArea,onPlayDrams,onStopDrams} = useDrams();
+  const pathname = useLocation().pathname
 
   useEffect(()=>{
     onStop();
   }
   ,[rhythmType])
 
+  useEffect(()=>{
+    if(pathname !== '/tuning') return;
+    onStop();
+  },[pathname])
 
   const onPlay = ()=>{
     if(isPlay)return;
