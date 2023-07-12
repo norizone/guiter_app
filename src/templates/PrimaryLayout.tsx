@@ -4,7 +4,6 @@ import { PrimaryNavi } from "@/components/navis/PrimaryNavi";
 import { Suspense } from "react";
 
 export const PrimaryLayout = () => {
-
   return (
     <div>
       <PrimaryNavi />
@@ -12,5 +11,5 @@ export const PrimaryLayout = () => {
         <Outlet />
       </Suspense>
     </div>
-  )
-}
+  );
+};

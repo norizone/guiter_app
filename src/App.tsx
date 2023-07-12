@@ -1,12 +1,12 @@
-import { RecoilRoot } from "recoil"; 
+import { RecoilRoot } from "recoil";
 import { Router } from "./routers/router";
 
 function App() {
   return (
     <RecoilRoot>
-      <Router/>
+      <Router />
     </RecoilRoot>
-  )
+  );
 }
 
-export default App
+export default App;
