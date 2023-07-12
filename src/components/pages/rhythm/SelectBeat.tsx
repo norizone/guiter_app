@@ -65,10 +65,16 @@ const wrap = css`
   `
 const primaryWrap = css`
 --select-width:4em;
+${mq('lg')}{
+  --select-width:6em;
+}
 `;
 
 const secondaryWrap =css`
 --select-width:10em;
+${mq('lg')}{
+  --select-width:14em;
+}
 `;
 
 const selectWrap = css`
