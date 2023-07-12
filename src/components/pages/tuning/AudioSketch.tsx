@@ -274,8 +274,8 @@ const maiWrap = css`
 `;
 
 const micBtn = css`
-  height: 70px;
-  width: 70px;
+  height: 80px;
+  width: 80px;
   margin-inline: auto;
   margin-top: 60px;
   display: block;
