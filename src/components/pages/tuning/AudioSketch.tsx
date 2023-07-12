@@ -143,7 +143,7 @@ export const AudioSketch: FC = () => {
       thisPosition === 6 && meterRef.current?.style.setProperty(`--meter-6`,'var(--color-light-blue)');
   };
 
-  // 前後の値を取得 現在の周波数と一番近い値のindex取得
+  // 前後の値との中間値を11頭分に 現在の周波数と一番近い値のindex取得 
   const positionClosestFrequency = (
     frequency: number,
     closeFrequencyIndex: number
@@ -157,13 +157,14 @@ export const AudioSketch: FC = () => {
         closeFrequencyIndex >= valuesFrequency.length - 1
           ? 2000
           : valuesFrequency[closeFrequencyIndex + 1];
-      const step = (afterValue - correctValue) / 5;
+      const composeAfterValue = (correctValue + afterValue ) / 2
+      const step = (composeAfterValue - correctValue) / 5;
       const calcValues: Array<number> = [];
       Array.from({ length: 5 }).map((_, index) => {
         const value = correctValue + step * index;
         calcValues.push(value);
       });
-      const composeValues = [...calcValues, afterValue];
+      const composeValues = [...calcValues, composeAfterValue];
       const closestFrequency = getClosestFrequency(frequency,composeValues);
       thisPosition = 6 + closestFrequency;
     } else if (frequency < correctValue) {
@@ -171,13 +172,14 @@ export const AudioSketch: FC = () => {
         closeFrequencyIndex === 0
           ? 0
           : valuesFrequency[closeFrequencyIndex - 1];
-      const step = (correctValue - beforeValue) / 5;
+      const composeBeforeValue = ( beforeValue + correctValue) /2
+      const step = (correctValue - composeBeforeValue) / 5;
       const calcValues: Array<number> = [];
       Array.from({ length: 5 }).map((_, index) => {
-        const value = beforeValue + step * index;
+        const value = composeBeforeValue + step * index;
         calcValues.push(value);
       });
-      const composeValues = [beforeValue, ...calcValues];
+      const composeValues = [composeBeforeValue, ...calcValues];
       const closestFrequency =  getClosestFrequency(frequency,composeValues)
       thisPosition = closestFrequency + 1;
     }
@@ -274,8 +276,8 @@ const maiWrap = css`
 `;
 
 const micBtn = css`
-  height: 70px;
-  width: 70px;
+  height: 80px;
+  width: 80px;
   margin-inline: auto;
   margin-top: 60px;
   display: block;
