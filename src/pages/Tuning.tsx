@@ -1,6 +1,8 @@
 import { PrimaryHeadline } from "@/components/headlines/PrimaryHeadline"
 import { motion } from "framer-motion"
 
+import { AudioSketch } from "@/components/pages/tuning/AudioSketch"
+
 export const Tuning = () => {
   return (
     <motion.main
@@ -9,9 +11,9 @@ export const Tuning = () => {
     exit={{opacity:0,y:0 ,zIndex:0}}
     transition={{duration:.2}}
     style={{position:"relative"}}
-
     >
-      <PrimaryHeadline>Tuning</PrimaryHeadline>
-      </motion.main>
+    <PrimaryHeadline>Tuning</PrimaryHeadline>
+    <AudioSketch/>
+    </motion.main>
   )
 }
