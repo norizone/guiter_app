@@ -3,7 +3,7 @@ import { PrimaryLayout } from "@/templates/PrimaryLayout";
 import { Rhythm } from "../pages/Rhythm";
 import { Code } from "../pages/Code";
 import { Scale } from "../pages/Scale";
-// import { Tuning } from "../pages/Tuning";
+import { Tuning } from "../pages/Tuning";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRhythmPlayer } from "@/hooks/useRhythmPlayer";
 
@@ -21,7 +21,7 @@ export const Router = () => {
           <Route path="rhythm" element={<Rhythm />} />
           <Route path="code" element={<Code/>} />
           <Route path="scale" element={<Scale />} />
-          {/* <Route path="tuning" element={<Tuning />} /> */}
+          <Route path="tuning" element={<Tuning />} />
           <Route path="*" element={<Rhythm />} />
         </Route>
       </Routes>
@@ -37,7 +37,8 @@ export const Router = () => {
     style={{position:"relative"}}>
       <PrimaryRhythmPlayer/>
     </motion.div> 
-    :<motion.div
+    :location.pathname !=='/tuning' &&
+    <motion.div
     key="MinRhythmPlayer"
     initial={{opacity:0,y:0 ,zIndex:0}}
     animate={{opacity:1,y:0 ,zIndex:1}}
