@@ -2,21 +2,21 @@ import { useEffect, useRef, useState } from "react";
 import { PitchDetector } from "pitchy";
 import { css } from "@emotion/react";
 
-import { keysFrequency, valuesFrequency } from "./frequencyScaleSets";
+import { keysFrequency, valuesFrequency } from "../stores/frequencyScaleSets";
 
 import type { FC } from "react";
 import { size, mq } from "@/theme/cssFunctions";
 
-let analyser :AnalyserNode;
-let inputs : Float32Array;
-let detector : PitchDetector<Float32Array>;
-let audioContext :AudioContext;
+let analyser: AnalyserNode;
+let inputs: Float32Array;
+let detector: PitchDetector<Float32Array>;
+let audioContext: AudioContext;
 
 export const AudioSketch: FC = () => {
-  const streamRef = useRef<MediaStream|null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
   const barPosition = useRef<number>(0);
   const animationIdRef = useRef<number>();
-  const meterRef = useRef<HTMLDivElement>(null) 
+  const meterRef = useRef<HTMLDivElement>(null);
   const pitchNameRef = useRef<HTMLParagraphElement>(null);
   const frequencyRef = useRef<HTMLSpanElement>(null);
   const [isOpenMic, setIsOpenMic] = useState<boolean>(false);
@@ -31,12 +31,7 @@ export const AudioSketch: FC = () => {
     const animate = () => {
       if (!isOpenMic) return;
       animationIdRef.current = requestAnimationFrame(animate);
-        updatePitch(
-          analyser,
-          detector,
-          inputs,
-          audioContext.sampleRate
-          )
+      updatePitch(analyser, detector, inputs, audioContext.sampleRate);
     };
     animate();
     return () => {
@@ -50,7 +45,7 @@ export const AudioSketch: FC = () => {
   };
 
   const onStartAudioSketch = async () => {
-    if (streamRef.current ) return;
+    if (streamRef.current) return;
     await micInit();
     setIsOpenMic(true);
     // ピッチ検出器
@@ -64,7 +59,7 @@ export const AudioSketch: FC = () => {
       streamRef.current.getTracks().forEach((track) => {
         track.stop();
       });
-      streamRef.current = null;
+    streamRef.current = null;
   };
 
   //マイク周り初期化
@@ -104,12 +99,16 @@ export const AudioSketch: FC = () => {
     analyserNode.getFloatTimeDomainData(input);
     const [pitch, clarity] = detector.findPitch(input, sampleRate);
     const accuracyPitch = clarity > 0.9 ? Math.round(pitch * 10) / 10 : 0; //clarity 正確性
-    const composePitch = accuracyPitch > 30 && accuracyPitch < 1980 ? accuracyPitch : 0
+    const composePitch =
+      accuracyPitch > 30 && accuracyPitch < 1980 ? accuracyPitch : 0;
     drawFrequency(composePitch);
   };
 
   // 周波数から一番近いものを取得
-  const getClosestFrequency = (targetFrequency: number ,searchArray = valuesFrequency) => {
+  const getClosestFrequency = (
+    targetFrequency: number,
+    searchArray = valuesFrequency
+  ) => {
     let closestFrequencyIndex = 0;
     let minDifference = Infinity;
     searchArray.map((el, index) => {
@@ -131,19 +130,31 @@ export const AudioSketch: FC = () => {
         ? positionClosestFrequency(thisFrequency, closeFrequencyIndex)
         : 0;
     barPosition.current = thisPosition;
-      if(pitchNameRef.current && frequencyRef.current){
-        const displayFrequency = thisPosition > 2 && thisPosition < 10 ? `${thisFrequency}` : '0';
-        const displayPitchName =  frequency && closeFrequencyIndex ? `${keysFrequency[closeFrequencyIndex]}` : '';
-        pitchNameRef.current.textContent = displayPitchName;
-        frequencyRef.current.textContent = displayFrequency;
-      }
-      meterRef.current?.removeAttribute('style');
-      thisPosition>0 && thisPosition!==6 &&
-      meterRef.current?.style.setProperty(`--meter-${thisPosition}`,'var(--color-blue)');
-      thisPosition === 6 && meterRef.current?.style.setProperty(`--meter-6`,'var(--color-light-blue)');
+    if (pitchNameRef.current && frequencyRef.current) {
+      const displayFrequency =
+        thisPosition > 2 && thisPosition < 10 ? `${thisFrequency}` : "0";
+      const displayPitchName =
+        frequency && closeFrequencyIndex
+          ? `${keysFrequency[closeFrequencyIndex]}`
+          : "";
+      pitchNameRef.current.textContent = displayPitchName;
+      frequencyRef.current.textContent = displayFrequency;
+    }
+    meterRef.current?.removeAttribute("style");
+    thisPosition > 0 &&
+      thisPosition !== 6 &&
+      meterRef.current?.style.setProperty(
+        `--meter-${thisPosition}`,
+        "var(--color-blue)"
+      );
+    thisPosition === 6 &&
+      meterRef.current?.style.setProperty(
+        `--meter-6`,
+        "var(--color-light-blue)"
+      );
   };
 
-  // 前後の値との中間値を11頭分に 現在の周波数と一番近い値のindex取得 
+  // 前後の値との中間値を11頭分に 現在の周波数と一番近い値のindex取得
   const positionClosestFrequency = (
     frequency: number,
     closeFrequencyIndex: number
@@ -157,7 +168,7 @@ export const AudioSketch: FC = () => {
         closeFrequencyIndex >= valuesFrequency.length - 1
           ? 2000
           : valuesFrequency[closeFrequencyIndex + 1];
-      const composeAfterValue = (correctValue + afterValue ) / 2
+      const composeAfterValue = (correctValue + afterValue) / 2;
       const step = (composeAfterValue - correctValue) / 5;
       const calcValues: Array<number> = [];
       Array.from({ length: 5 }).map((_, index) => {
@@ -165,14 +176,14 @@ export const AudioSketch: FC = () => {
         calcValues.push(value);
       });
       const composeValues = [...calcValues, composeAfterValue];
-      const closestFrequency = getClosestFrequency(frequency,composeValues);
+      const closestFrequency = getClosestFrequency(frequency, composeValues);
       thisPosition = 6 + closestFrequency;
     } else if (frequency < correctValue) {
       const beforeValue =
         closeFrequencyIndex === 0
           ? 0
           : valuesFrequency[closeFrequencyIndex - 1];
-      const composeBeforeValue = ( beforeValue + correctValue) /2
+      const composeBeforeValue = (beforeValue + correctValue) / 2;
       const step = (correctValue - composeBeforeValue) / 5;
       const calcValues: Array<number> = [];
       Array.from({ length: 5 }).map((_, index) => {
@@ -180,7 +191,7 @@ export const AudioSketch: FC = () => {
         calcValues.push(value);
       });
       const composeValues = [composeBeforeValue, ...calcValues];
-      const closestFrequency =  getClosestFrequency(frequency,composeValues)
+      const closestFrequency = getClosestFrequency(frequency, composeValues);
       thisPosition = closestFrequency + 1;
     }
     return thisPosition;
@@ -190,36 +201,101 @@ export const AudioSketch: FC = () => {
     <div css={maiWrap}>
       <section>
         <div css={meterWrap} ref={meterRef}>
-          <svg width="319" height="57" viewBox="0 0 319 57" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 37.775V18.896H1.147V37.465L0.899 36.845C1.25033 36.907 1.68433 36.845 2.201 36.659C2.71767 36.473 3.23433 36.1837 3.751 35.791C4.28833 35.3983 4.73267 34.9437 5.084 34.427C5.332 34.0757 5.518 33.6933 5.642 33.28C5.766 32.846 5.828 32.381 5.828 31.885C5.828 31.327 5.735 30.893 5.549 30.583C5.38367 30.273 5.07367 30.118 4.619 30.118C3.97833 30.118 3.317 30.397 2.635 30.955C1.97367 31.513 1.41567 32.164 0.961 32.908L0.93 31.761C1.55 30.8103 2.21133 30.0663 2.914 29.529C3.61667 28.9917 4.35033 28.723 5.115 28.723C5.859 28.723 6.45833 28.9813 6.913 29.498C7.36767 30.0147 7.595 30.7587 7.595 31.73C7.595 32.8873 7.254 33.931 6.572 34.861C5.89 35.791 4.94967 36.5247 3.751 37.062C3.21367 37.31 2.67633 37.4857 2.139 37.589C1.60167 37.713 1.07467 37.775 0.558 37.775H0Z" fill="white"/>
-            <path d="M309.352 36.592V32.848L307 33.976V32.104L309.352 31V25.12L307 26.248V24.376L309.352 23.248V19.432H310.48V22.792L314.344 20.92V16.84H315.472V20.464L317.824 19.36V21.208L315.472 22.336V28.216L317.824 27.16V29.032L315.472 30.064V34.24H314.344V30.52L310.48 32.392V36.592H309.352ZM310.48 30.544L314.344 28.672V22.792L310.48 24.664V30.544Z" fill="white"/>
-            <path d="M159 15L149.474 3.75L168.526 3.75L159 15Z" fill="var(--meter-6,var(--primary-border))"/>
+          <svg
+            width="319"
+            height="57"
+            viewBox="0 0 319 57"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M0 37.775V18.896H1.147V37.465L0.899 36.845C1.25033 36.907 1.68433 36.845 2.201 36.659C2.71767 36.473 3.23433 36.1837 3.751 35.791C4.28833 35.3983 4.73267 34.9437 5.084 34.427C5.332 34.0757 5.518 33.6933 5.642 33.28C5.766 32.846 5.828 32.381 5.828 31.885C5.828 31.327 5.735 30.893 5.549 30.583C5.38367 30.273 5.07367 30.118 4.619 30.118C3.97833 30.118 3.317 30.397 2.635 30.955C1.97367 31.513 1.41567 32.164 0.961 32.908L0.93 31.761C1.55 30.8103 2.21133 30.0663 2.914 29.529C3.61667 28.9917 4.35033 28.723 5.115 28.723C5.859 28.723 6.45833 28.9813 6.913 29.498C7.36767 30.0147 7.595 30.7587 7.595 31.73C7.595 32.8873 7.254 33.931 6.572 34.861C5.89 35.791 4.94967 36.5247 3.751 37.062C3.21367 37.31 2.67633 37.4857 2.139 37.589C1.60167 37.713 1.07467 37.775 0.558 37.775H0Z"
+              fill="white"
+            />
+            <path
+              d="M309.352 36.592V32.848L307 33.976V32.104L309.352 31V25.12L307 26.248V24.376L309.352 23.248V19.432H310.48V22.792L314.344 20.92V16.84H315.472V20.464L317.824 19.36V21.208L315.472 22.336V28.216L317.824 27.16V29.032L315.472 30.064V34.24H314.344V30.52L310.48 32.392V36.592H309.352ZM310.48 30.544L314.344 28.672V22.792L310.48 24.664V30.544Z"
+              fill="white"
+            />
+            <path
+              d="M159 15L149.474 3.75L168.526 3.75L159 15Z"
+              fill="var(--meter-6,var(--primary-border))"
+            />
             <g>
-              <path d="M22.56 38.38C14.38 40.14 6.83 42.05 0 44.09V56.71C6.83 55.05 14.38 53.51 22.56 52.09V38.38Z" fill="var(--meter-1,var(--primary-border))"/>
-              <path d="M52.1101 33.13C44.2001 34.28 36.66 35.56 29.55 36.95V50.93C36.66 49.8 44.2001 48.77 52.1101 47.84V33.13Z" fill="var(--meter-2,var(--primary-border))"/>
-              <path d="M81.66 29.57C73.88 30.32 66.35 31.18 59.1 32.15V47.05C66.35 46.27 73.88 45.57 81.66 44.96V29.57Z" fill="var(--meter-3,var(--primary-border))"/>
-              <path d="M111.21 27.33C103.51 27.77 95.98 28.3 88.65 28.94V44.45C95.98 43.94 103.51 43.5 111.21 43.15V27.33Z" fill="var(--meter-4,var(--primary-border))"/>
-              <path d="M140.76 26.19C133.11 26.35 125.58 26.61 118.2 26.96V42.85C125.58 42.57 133.11 42.36 140.76 42.23V26.19Z" fill="var(--meter-5,var(--primary-border))"/>
-              <path d="M147.76 42.13C151.44 42.09 155.14 42.07 158.87 42.07C162.6 42.07 166.53 42.09 170.32 42.13V26.08C166.56 26.03 162.78 26 158.97 26C155.16 26 151.47 26.03 147.76 26.07V42.13Z" fill="var(--meter-6,var(--primary-border))"/>
-              <path d="M199.87 26.97C192.49 26.62 184.96 26.36 177.31 26.2V42.23C184.96 42.36 192.49 42.57 199.87 42.86V26.97Z" fill="var(--meter-7,var(--primary-border))"/>
-              <path d="M229.42 28.95C222.09 28.31 214.56 27.78 206.86 27.34V43.17C214.57 43.52 222.09 43.96 229.42 44.48V28.95Z" fill="var(--meter-8,var(--primary-border))"/>
-              <path d="M258.97 32.17C251.72 31.2 244.19 30.34 236.41 29.59V44.99C244.19 45.6 251.72 46.3 258.97 47.09V32.17Z" fill="var(--meter-9,var(--primary-border))"/>
-              <path d="M288.52 36.97C281.41 35.58 273.87 34.3 265.96 33.14V47.87C273.87 48.81 281.41 49.85 288.52 50.98V36.97Z" fill="var(--meter-10,var(--primary-border))"/>
-              <path d="M295.51 38.41V52.15C303.69 53.58 311.24 55.13 318.07 56.8V44.14C311.24 42.09 303.69 40.18 295.51 38.42V38.41Z" fill="var(--meter-11,var(--primary-border))"/>
+              <path
+                d="M22.56 38.38C14.38 40.14 6.83 42.05 0 44.09V56.71C6.83 55.05 14.38 53.51 22.56 52.09V38.38Z"
+                fill="var(--meter-1,var(--primary-border))"
+              />
+              <path
+                d="M52.1101 33.13C44.2001 34.28 36.66 35.56 29.55 36.95V50.93C36.66 49.8 44.2001 48.77 52.1101 47.84V33.13Z"
+                fill="var(--meter-2,var(--primary-border))"
+              />
+              <path
+                d="M81.66 29.57C73.88 30.32 66.35 31.18 59.1 32.15V47.05C66.35 46.27 73.88 45.57 81.66 44.96V29.57Z"
+                fill="var(--meter-3,var(--primary-border))"
+              />
+              <path
+                d="M111.21 27.33C103.51 27.77 95.98 28.3 88.65 28.94V44.45C95.98 43.94 103.51 43.5 111.21 43.15V27.33Z"
+                fill="var(--meter-4,var(--primary-border))"
+              />
+              <path
+                d="M140.76 26.19C133.11 26.35 125.58 26.61 118.2 26.96V42.85C125.58 42.57 133.11 42.36 140.76 42.23V26.19Z"
+                fill="var(--meter-5,var(--primary-border))"
+              />
+              <path
+                d="M147.76 42.13C151.44 42.09 155.14 42.07 158.87 42.07C162.6 42.07 166.53 42.09 170.32 42.13V26.08C166.56 26.03 162.78 26 158.97 26C155.16 26 151.47 26.03 147.76 26.07V42.13Z"
+                fill="var(--meter-6,var(--primary-border))"
+              />
+              <path
+                d="M199.87 26.97C192.49 26.62 184.96 26.36 177.31 26.2V42.23C184.96 42.36 192.49 42.57 199.87 42.86V26.97Z"
+                fill="var(--meter-7,var(--primary-border))"
+              />
+              <path
+                d="M229.42 28.95C222.09 28.31 214.56 27.78 206.86 27.34V43.17C214.57 43.52 222.09 43.96 229.42 44.48V28.95Z"
+                fill="var(--meter-8,var(--primary-border))"
+              />
+              <path
+                d="M258.97 32.17C251.72 31.2 244.19 30.34 236.41 29.59V44.99C244.19 45.6 251.72 46.3 258.97 47.09V32.17Z"
+                fill="var(--meter-9,var(--primary-border))"
+              />
+              <path
+                d="M288.52 36.97C281.41 35.58 273.87 34.3 265.96 33.14V47.87C273.87 48.81 281.41 49.85 288.52 50.98V36.97Z"
+                fill="var(--meter-10,var(--primary-border))"
+              />
+              <path
+                d="M295.51 38.41V52.15C303.69 53.58 311.24 55.13 318.07 56.8V44.14C311.24 42.09 303.69 40.18 295.51 38.42V38.41Z"
+                fill="var(--meter-11,var(--primary-border))"
+              />
             </g>
           </svg>
         </div>
         <div css={dataArea}>
-          <p><span ref={frequencyRef}>0</span>Hz</p>
-          <p css={pitchName} ref={pitchNameRef}>&nbsp;</p>
+          <p>
+            <span ref={frequencyRef}>0</span>Hz
+          </p>
+          <p css={pitchName} ref={pitchNameRef}>
+            &nbsp;
+          </p>
         </div>
       </section>
       <button onClick={handlerTuning} type="button" css={[micBtn]}>
-        <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          width="120"
+          height="120"
+          viewBox="0 0 120 120"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           {isOpenMic && (
             <g transform="translate(60, 60)">
               <circle cx="0" cy="0" r="40" fill="url(#paint0_linear_55_4)">
-                <animate attributeName="opacity" from="1" to="0" dur="1.5s" begin="0s" repeatCount="indefinite" />
+                <animate
+                  attributeName="opacity"
+                  from="1"
+                  to="0"
+                  dur="1.5s"
+                  begin="0s"
+                  repeatCount="indefinite"
+                />
                 <animateTransform
                   attributeName="transform"
                   additive="sum"
@@ -269,9 +345,9 @@ export const AudioSketch: FC = () => {
 };
 
 const maiWrap = css`
-  margin-top:${size.vh(724,144)};
-  ${mq('lg')}{
-    margin:144px;
+  margin-top: ${size.vh(724, 144)};
+  ${mq("lg")} {
+    margin: 144px;
   }
 `;
 
@@ -290,27 +366,27 @@ const micBtn = css`
 `;
 
 const meterWrap = css`
+  width: 100%;
+  max-width: 480px;
+  margin-inline: auto;
+  padding-inline: 30px;
+  > svg {
+    display: block;
     width: 100%;
-    max-width: 480px;
-    margin-inline: auto;
-    padding-inline:30px ;
-    >svg{
-      display: block;
-      width: 100%;
-      height:auto;
-    }
-`
+    height: auto;
+  }
+`;
 
 const dataArea = css`
   font-family: var(--font-en);
   display: grid;
-  grid-template-rows:1em ${size.rem(40)} ;
-  row-gap:.3em;
+  grid-template-rows: 1em ${size.rem(40)};
+  row-gap: 0.3em;
   justify-content: center;
   align-items: center;
-  text-align:center;
+  text-align: center;
 `;
 
 const pitchName = css`
-  font-size:${size.rem(40)};
-`
+  font-size: ${size.rem(40)};
+`;

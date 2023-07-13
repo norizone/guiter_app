@@ -10,17 +10,17 @@ export const size = {
   ls: (letterSpacing: number) => `${letterSpacing / 1000}em`,
 };
 
-type Breakpoints = 's' | 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
+type Breakpoints = "s" | "sm" | "md" | "lg" | "xl" | "xxl";
 
 const breakpoints: Record<Breakpoints, number> = {
-  's': 480,
-  'sm': 576,
-  'md': 768,
-  'lg': 992,
-  'xl': 1200,
-  'xxl': 1400,
+  s: 480,
+  sm: 576,
+  md: 768,
+  lg: 992,
+  xl: 1200,
+  xxl: 1400,
 };
 
-export const mq = (size:Breakpoints) => {
+export const mq = (size: Breakpoints) => {
   return `@media (min-width: ${breakpoints[size]}px)`;
 };
