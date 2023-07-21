@@ -10,6 +10,7 @@ import {
   composeDramsState,
   type DramsState,
 } from "@/stores/DramsState";
+import closeIcon from "@/assets/img/close.svg";
 
 import type { FC } from "react";
 
@@ -114,6 +115,9 @@ export const InputModal: FC<Props> = (props) => {
           </div>
         </div>
       ))}
+      <button css={closeBtn} type="button" onClick={closeModal}>
+        <img src={closeIcon} alt="" width="1" height="1"/>
+      </button>
       </div>
     </div>
   );
@@ -153,6 +157,21 @@ const modalContents = css`
  z-index:1;
  position: relative;
 `
+
+const closeBtn = css`
+width:28px;
+height:28px;
+position:absolute;
+top:-10px;
+left:auto;
+right:-10px;
+z-index: 1;
+>img{
+  width:100%;
+  height:auto;
+  display: block;
+}
+`;
 
 const dramsName = css`
   color:#fff;
