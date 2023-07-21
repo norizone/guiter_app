@@ -199,7 +199,7 @@ const label = css`
 const barWrap = css`
   position: relative;
   height: ${size.vw(375, 6)};
-  width: 100%;
+  width: 80%;
   background: transparent;
   max-width: 300px;
   margin-bottom: ${size.vh(728, 30)};

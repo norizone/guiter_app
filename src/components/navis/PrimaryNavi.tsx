@@ -5,14 +5,21 @@ import { useLocation } from "react-router-dom";
 import { mq, size } from "@/theme/cssFunctions";
 import { NaviIcon } from "@/components/icons/NaviIcon";
 
+import { IsModalOpen } from "@/stores/ModalState";
+
 import type { PageList } from "@/types/components";
+import { useRecoilValue } from "recoil";
 
 export const PrimaryNavi = () => {
   const links: Array<PageList> = ["rhythm", "code", "scale", "tuning"];
   const pathname = useLocation().pathname;
+  const isOpen = useRecoilValue(IsModalOpen);
 
   return (
-    <nav css={navStyle}>
+    <nav css={[
+      navStyle,
+      isOpen&&css`z-index:2; opacity:.4; pointer-events:none;`
+    ]}>
       <ul css={listStyle}>
         {links.map((el, index) => (
           <li key={index} css={itemStyle}>
@@ -42,7 +49,7 @@ const navStyle = css`
   padding-bottom: env(safe-area-inset-bottom);
   left: 0;
   width: 100%;
-  z-index: 1;
+  z-index: 100;
   font-family: var(--font-en);
   height: calc(${size.vw(375, 58)} + env(safe-area-inset-bottom));
   background: rgba(3, 7, 30, 0.7);
