@@ -13,9 +13,11 @@ import {
   selectDramsBeat,
 } from "@/stores/RhythmState";
 import { dramsBeatSets } from "@/stores/BeatSets";
-import { defaultDramsState, dramsState } from "@/stores/DramsState";
+import { defaultDramsState, dramsState , composeDramsState } from "@/stores/DramsState";
+import { useModal } from "./useModal";
 
 export const useDrams = () => {
+  const composeValue = useRecoilValue(composeDramsState);
   const [isPlay, setIsPlay] = useRecoilState<boolean>(IsRhythmPlaying);
   const defaultValues = useRecoilValue(defaultDramsState);
   const [dramsValues, setDramsValues] = useRecoilState(dramsState);
@@ -28,24 +30,27 @@ export const useDrams = () => {
   const padRef = useRef<RefObject<HTMLLIElement>[]>([]);
   const padParentRef = useRef<HTMLUListElement>(null);
   const bpmNumber = useRecoilValue(bpmNumberState);
-  const playValues = useRef(dramsValues);
+  const playValues = useRef(composeValue);
   const [isReset, setIsReset] = useState(false);
-  const [drams] = useState<Tone.Sampler>(
-    new Tone.Sampler(
-      {
-        C1: "bass.mp3",
-        C2: "tam.mp3",
-        C3: "sn.mp3",
-        C4: "hicc.mp3",
-        C5: "sin.mp3",
-      },
-      {
-        baseUrl: "/sound/",
-        attack: 0.1,
-        release: 0.9,
-      }
-    ).toDestination()
-  );
+  const [samplers,setSamplers] = useState<Array<Tone.Sampler>>();
+  const {Modal,openModal} = useModal();
+
+  useEffect(() => {
+      const newSamplers:Array<Tone.Sampler> = [];
+      defaultValues.map((defaultValue,index)=>{
+        const sampler = new Tone.Sampler({
+          [defaultValue.midiKey]:defaultValue.sound,
+        },{
+          baseUrl: "/sound/",
+          attack: Number(composeValue[index].attack) ?? defaultValue.attack,
+          release: composeValue[index].release ?? defaultValue.release,
+          volume: Number(composeValue[index].volume) === 0 ? -Infinity : Number(composeValue[index].volume) ?? defaultValue.volume,
+        }).toDestination();
+        newSamplers.push(sampler);
+      });
+      setSamplers(newSamplers)
+      playValues.current = composeValue
+    },[composeValue,defaultValues]);
 
   useEffect(() => {
     dramsValues.map((_, key) => {
@@ -58,6 +63,14 @@ export const useDrams = () => {
     Tone.Transport.bpm.value = bpmNumber;
   }, [bpmNumber]);
 
+  useEffect(() => {
+    if (dBeatSets[dSelectedBeat].value === beatNumber) return;
+    setBeatNumber(dBeatSets[dSelectedBeat].value);
+    if (!isPlay) return;
+    onStopDrams();
+    setIsPlay(false);
+  }, [dBeatSets, dSelectedBeat, beatNumber]);
+
   const handlerCounterStyle = (
     thisCount: number,
     index: number,
@@ -66,8 +79,7 @@ export const useDrams = () => {
     if (
       !padRef.current[index].current ||
       !padRef.current[index].current?.children
-    )
-      return;
+    ) return;
     const thisRef = padRef.current[index].current ?? null;
     const prevCount = thisCount - 1 < 0 ? 15 : thisCount - 1;
     thisRef?.children[prevCount].classList.remove("now");
@@ -82,13 +94,11 @@ export const useDrams = () => {
     }
   };
 
-  useEffect(() => {
-    if (dBeatSets[dSelectedBeat].value === beatNumber) return;
-    setBeatNumber(dBeatSets[dSelectedBeat].value);
-    if (!isPlay) return;
-    onStopDrams();
-    setIsPlay(false);
-  }, [dBeatSets, dSelectedBeat, beatNumber]);
+  const onOpenModal = (index:number)=>{
+    openModal('dramsTone',index);
+    isPlay && setIsPlay(false);
+    isPlay && onStopDrams();
+  }
 
   const onResetDrams = () => {
     playValues.current = defaultValues;
@@ -139,7 +149,7 @@ export const useDrams = () => {
   };
 
   const onPlayDrams = () => {
-    if (drams.loaded) {
+    if (samplers?.every((sampler)=> sampler.loaded)) {
       let thisCount = 0;
       Tone.Transport.clear(eventId);
       setEventId(
@@ -147,7 +157,7 @@ export const useDrams = () => {
           playValues.current.map((v, index) => {
             handlerCounterStyle(thisCount, index, v.pattern[thisCount]);
             if (v.pattern[thisCount]) {
-              drams.triggerAttackRelease(v.midiKey, "32n", time);
+              samplers[index].triggerAttackRelease(v.midiKey, "32n", time);
             }
           });
           thisCount++;
@@ -166,18 +176,19 @@ export const useDrams = () => {
 
   const PrimaryDramsArea = () => {
     return (
+    <>
       <div css={dramsWrap}>
-        <ul css={dramsLabels}>
+        <div css={dramsLabels}>
           {playValues.current.map((d, index) => (
-            <li
+            <button type="button"
+              onClick={()=>onOpenModal(index)}
               css={[dramsLabel]}
               key={index}
-              // onClick={openModal}
             >
               {d.name}
-            </li>
+            </button>
           ))}
-        </ul>
+        </div>
         <ul css={padWrap} ref={padParentRef}>
           {playValues.current.map((d, dIndex) => (
             <li
@@ -230,6 +241,8 @@ export const useDrams = () => {
           </button>
         </div>
       </div>
+      <Modal />
+    </>
     );
   };
 

@@ -42,7 +42,7 @@ const navStyle = css`
   padding-bottom: env(safe-area-inset-bottom);
   left: 0;
   width: 100%;
-  z-index: 100;
+  z-index: 1;
   font-family: var(--font-en);
   height: calc(${size.vw(375, 58)} + env(safe-area-inset-bottom));
   background: rgba(3, 7, 30, 0.7);
