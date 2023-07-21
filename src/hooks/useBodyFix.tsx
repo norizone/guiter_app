@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export const useBodyFix = () => {
-  const [scrollPosition, setScrollPosition] = useState<number>(0);
+  const [scrollPosition, setScrollPosition] = useState<number>(-1);
   const body = document.body;
   let scrollAmount = 0;
 
@@ -10,11 +10,12 @@ export const useBodyFix = () => {
     setScrollPosition(scrollAmount);
     body.style.position = "fixed";
     body.style.top = `-${scrollAmount}px`;
+    body.style.overflow= "hidden";
+    body.style.width="100%";
   };
 
   const onFixOff = () => {
-    body.style.removeProperty("position");
-    body.style.removeProperty("top");
+    body.removeAttribute("style");
     window.scrollTo({ top: scrollPosition });
   };
 

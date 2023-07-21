@@ -277,7 +277,7 @@ export const AudioSketch: FC = () => {
           </p>
         </div>
       </section>
-      <button onClick={handlerTuning} type="button" css={[micBtn]}>
+      <button onClick={handlerTuning} type="button" css={[micBtn]} title={isOpenMic ? 'mic on' : 'mic off'}>
         <svg
           width="120"
           height="120"

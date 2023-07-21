@@ -21,11 +21,12 @@ export const useRhythmPlayer = () => {
   const { PrimaryDramsArea, onPlayDrams, onStopDrams } = useDrams();
   const pathname = useLocation().pathname;
 
-  useEffect(() => {
+  
+  useEffect(() => {// playerを初期マウント時に操作させないため hooks内で処理
     onStop();
   }, [rhythmType]);
 
-  useEffect(() => {
+  useEffect(() => {// playerを初期マウント時に操作させないため hooks内で処理
     if (pathname !== "/tuning") return;
     onStop();
   }, [pathname]);
