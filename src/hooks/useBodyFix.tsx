@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useRecoilState } from "recoil";
+
+import { ScrollPosition } from "@/stores/ModalState";
 
 export const useBodyFix = () => {
-  const [scrollPosition, setScrollPosition] = useState<number>(-1);
+  const [scrollPosition, setScrollPosition] = useRecoilState<number>(ScrollPosition);
   const body = document.body;
   let scrollAmount = 0;
 

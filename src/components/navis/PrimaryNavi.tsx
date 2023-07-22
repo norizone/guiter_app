@@ -18,7 +18,7 @@ export const PrimaryNavi = () => {
   return (
     <nav css={[
       navStyle,
-      isOpen&&css`z-index:2; opacity:.4; pointer-events:none;`
+      isOpen&&css`z-index:1; pointer-events:none;`
     ]}>
       <ul css={listStyle}>
         {links.map((el, index) => (
