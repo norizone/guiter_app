@@ -28,10 +28,10 @@ export const Router = () => {
         {location.pathname === "/rhythm" || location.pathname === "/" ? (
           <motion.div
             key="PrimaryRhythmPlayer"
-            initial={{ opacity: 0, y: 100, zIndex: 0 }}
-            animate={{ opacity: 1, y: 0, zIndex: 1 }}
-            exit={{ opacity: 0, y: 100, zIndex: 0 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0}}
+            exit={{ opacity: 0, y: 100 }}
+            transition={{ duration: .1 }}
             style={{ position: "relative" }}
           >
             <PrimaryRhythmPlayer />

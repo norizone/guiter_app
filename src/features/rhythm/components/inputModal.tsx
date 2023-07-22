@@ -59,7 +59,7 @@ export const InputModal: FC<Props> = (props) => {
     release: copyComposeDrams.release,
     volume: copyComposeDrams.volume,
   });
-  const {closeModal} = useModal();
+  const { closeModal } = useModal();
 
   const setInputValue = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -74,12 +74,12 @@ export const InputModal: FC<Props> = (props) => {
     newValues[keyName] = newValue;
     setInputValues({ ...newValues });
     debounce(() => {
-      const newUserDramStates = {...userDramStates[selectIndex]};
+      const newUserDramStates = { ...userDramStates[selectIndex] };
       newUserDramStates[keyName] = newValue;
       setUserDramStates([
-        ...userDramStates.slice(0,selectIndex),
+        ...userDramStates.slice(0, selectIndex),
         newUserDramStates,
-        ...userDramStates.slice(selectIndex+1)
+        ...userDramStates.slice(selectIndex + 1),
       ]);
     });
   };
@@ -87,98 +87,114 @@ export const InputModal: FC<Props> = (props) => {
   return (
     <div css={modal}>
       <div css={modalCloseBg} onClick={closeModal}></div>
-      <div css={modalContents}>
-        <h3 css={dramsName}>{composeDrams[selectIndex].name}</h3>
-      {settingInputs.map((setting, index) => (
-        <div key={index}>
-          <p css={label}>{setting.keyName}</p>
-          <div
-            css={[
-              barWrap,
-              `--bar-width:${
-                ((inputValues[setting.keyName] - setting.min) / (setting.max - setting.min) ) * 100
-              }%`,
-            ]}
-          >
-            <input
-              id="bpmBar"
-              type="range"
-              value={inputValues[setting.keyName]}
-              onChange={(event) =>
-                setInputValue(event, setting.keyName, setting.max, setting.min)
-              }
-              aria-label="BPM変更"
-              min={setting.min}
-              max={setting.max}
-              step={setting.step}
-            />
-          </div>
+      <div css={modalScroll}>
+        <div css={modalContents}>
+          <h3 css={dramsName}>{composeDrams[selectIndex].name}</h3>
+          {settingInputs.map((setting, index) => (
+            <div key={index}>
+              <p css={label}>{setting.keyName}</p>
+              <div
+                css={[
+                  barWrap,
+                  `--bar-width:${
+                    ((inputValues[setting.keyName] - setting.min) /
+                      (setting.max - setting.min)) *
+                    100
+                  }%`,
+                ]}
+              >
+                <input
+                  id="bpmBar"
+                  type="range"
+                  value={inputValues[setting.keyName]}
+                  onChange={(event) =>
+                    setInputValue(
+                      event,
+                      setting.keyName,
+                      setting.max,
+                      setting.min
+                    )
+                  }
+                  aria-label="BPM変更"
+                  min={setting.min}
+                  max={setting.max}
+                  step={setting.step}
+                />
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
-      <button css={closeBtn} type="button" onClick={closeModal}>
-        <img src={closeIcon} alt="" width="1" height="1"/>
-      </button>
+        <button css={closeBtn} type="button" onClick={closeModal}>
+          <img src={closeIcon} alt="" width="1" height="1" />
+        </button>
       </div>
     </div>
   );
 };
 
 const modal = css`
-position:fixed;
-z-index:100;
-left: 0;
-top:0;
-width:100%;
-height: 100%;
-display:flex;
-flex-flow:row nowrap;
-justify-content:center;
-align-items:center;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
 `;
 
 const modalCloseBg = css`
   background: black;
-  opacity:.6;
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
+  opacity: 0.6;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
-  z-index:0;
+  z-index: 0;
+`;
+
+const modalScroll = css`
+  overflow: auto;
+  max-height: 100%;
+  width: 80%;
+  max-width: 420px;
+  z-index: 1;
+  position: relative;
+  padding: 10px 10px 0 0 ;
 `;
 
 const modalContents = css`
- background: var(--color-bg);
- padding:20px 0 30px;
- width: 80%;
- max-width:420px;
- height:max-content;
- color:#fff;
- z-index:1;
- position: relative;
-`
+  background: var(--color-bg);
+  padding: 20px 0 30px;
+  width: 100%;
+  height: max-content;
+  color: #fff;
+`;
 
 const closeBtn = css`
-width:28px;
-height:28px;
-position:absolute;
-top:-10px;
-left:auto;
-right:-10px;
-z-index: 1;
->img{
-  width:100%;
-  height:auto;
-  display: block;
-}
+  width: 28px;
+  height: 28px;
+  position: absolute;
+  top: 0px;
+  left: auto;
+  right: 0px;
+  z-index: 1;
+  > img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
 `;
 
 const dramsName = css`
-  color:#fff;
+  color: #fff;
   text-transform: capitalize;
   font-family: var(--font-en);
-  text-align:center;
-  padding:0 0 20px;
+  text-align: center;
+  padding: 0 0 20px;
   font-size: ${size.vw(375, 34)};
   ${mq("s")} {
     font-size: ${size.rem(34)};
@@ -189,8 +205,8 @@ const label = css`
   text-transform: capitalize;
   font-family: var(--font-en);
   font-size: ${size.vw(375, 14)};
-  padding:30px 0 20px;
-  text-align:center;
+  padding: 30px 0 20px;
+  text-align: center;
   ${mq("s")} {
     font-size: ${size.rem(14)};
   }
