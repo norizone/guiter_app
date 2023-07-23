@@ -7,16 +7,12 @@ import { SelectRhythmTypeArea } from "@/features/rhythm/components/SelectRhythmT
 import { PrimaryInputsWrap } from "@/components/wraps/PrimaryInputsWrap";
 import { SelectBeat } from "@/features/rhythm/components/SelectBeat";
 import { useModal } from "@/hooks/useModal";
-import { useWakeLock } from "@/hooks/useWebLock";
 
 export const Rhythm = () => {
-  const {onWebLocke,resetWebLock} = useWakeLock();
   const {closeModal} = useModal();
 
   useEffect(()=>{
-    onWebLocke();
     return () => {
-      resetWebLock();
       closeModal();
     }
   },[])
