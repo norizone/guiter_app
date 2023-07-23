@@ -11,7 +11,6 @@ import { mq, size } from "@/theme/cssFunctions";
 import { css } from "@emotion/react";
 import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useWakeLock } from "./useWebLock";
 
 export const useRhythmPlayer = () => {
   const [isPlay, setIsPlay] = useRecoilState<boolean>(IsRhythmPlaying);
@@ -21,7 +20,6 @@ export const useRhythmPlayer = () => {
     useMetronome();
   const { PrimaryDramsArea, onPlayDrams, onStopDrams } = useDrams();
   const pathname = useLocation().pathname;
-  const {onWebLocke,resetWebLock} = useWakeLock()
 
   
   useEffect(() => {// playerを初期マウント時に操作させないため hooks内で処理
@@ -35,7 +33,6 @@ export const useRhythmPlayer = () => {
 
   const onPlay = async() => {
     if (isPlay) return;
-    await onWebLocke();
     setIsPlay(true);
     !rhythmType ? onPlayMetronome() : onPlayDrams();
   };
@@ -44,7 +41,6 @@ export const useRhythmPlayer = () => {
     if (!isPlay) return;
     setIsPlay(false);
     !rhythmType ? onStopMetronome(): onStopDrams();
-    resetWebLock();
   };
 
   const MinRhythmPlayer = () => {
