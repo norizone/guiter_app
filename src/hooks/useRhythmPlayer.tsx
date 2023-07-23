@@ -40,8 +40,7 @@ export const useRhythmPlayer = () => {
   const onStop = () => {
     if (!isPlay) return;
     setIsPlay(false);
-    onStopMetronome();
-    onStopDrams();
+    !rhythmType ? onStopMetronome(): onStopDrams();
   };
 
   const MinRhythmPlayer = () => {
