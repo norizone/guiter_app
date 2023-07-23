@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export const useWakeLock = () =>{
-  const [wakeLock ,setWakeLock] = useState<WakeLockSentinel>();
+  const [wakeLock ,setWakeLock] = useState<WakeLockSentinel|null>(null);
 
   const onWebLocke = async() =>{
       try {
@@ -12,7 +12,12 @@ export const useWakeLock = () =>{
       }
   }
   const resetWebLock = ()=>{
-    wakeLock && wakeLock.release();
+    if (wakeLock !== null) {
+      wakeLock.release()
+        .then(() => {
+          setWakeLock(null);
+        })
+    }
 }
 return {onWebLocke,resetWebLock}
 }
