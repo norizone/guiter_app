@@ -6,6 +6,7 @@ import { keysFrequency, valuesFrequency } from "../stores/frequencyScaleSets";
 
 import type { FC } from "react";
 import { size, mq } from "@/theme/cssFunctions";
+import { useWakeLock  } from "@/hooks/useWebLock";
 
 let analyser: AnalyserNode;
 let inputs: Float32Array;
@@ -20,6 +21,7 @@ export const AudioSketch: FC = () => {
   const pitchNameRef = useRef<HTMLParagraphElement>(null);
   const frequencyRef = useRef<HTMLSpanElement>(null);
   const [isOpenMic, setIsOpenMic] = useState<boolean>(false);
+  const {onWebLocke,resetWebLock} = useWakeLock();
 
   useEffect(() => {
     return () => {
@@ -51,6 +53,7 @@ export const AudioSketch: FC = () => {
     // ピッチ検出器
     detector = PitchDetector.forFloat32Array(analyser.fftSize);
     inputs = new Float32Array(detector.inputLength);
+    await onWebLocke();
   };
 
   const onStopAudioSketch = () => {
@@ -60,6 +63,7 @@ export const AudioSketch: FC = () => {
         track.stop();
       });
     streamRef.current = null;
+    resetWebLock();
   };
 
   //マイク周り初期化
