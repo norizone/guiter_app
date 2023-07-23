@@ -9,7 +9,6 @@ export const useWakeLock = () =>{
       }
   }
   const resetWebLock = ()=>{
-    console.log(wakeLockState)
     if (wakeLockState !== null) {
        wakeLockState.release()
         .then(() => {
