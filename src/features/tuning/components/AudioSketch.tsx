@@ -57,13 +57,13 @@ export const AudioSketch: FC = () => {
   };
 
   const onStopAudioSketch = () => {
+    resetWebLock();
     setIsOpenMic(false);
     streamRef.current &&
       streamRef.current.getTracks().forEach((track) => {
         track.stop();
       });
     streamRef.current = null;
-    resetWebLock();
   };
 
   //マイク周り初期化

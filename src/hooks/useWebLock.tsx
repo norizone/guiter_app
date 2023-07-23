@@ -1,18 +1,20 @@
-import { useState } from "react";
+let wakeLockState:WakeLockSentinel|null = null;
 
 export const useWakeLock = () =>{
-  const [wakeLock ,setWakeLock] = useState<WakeLockSentinel>();
-
   const onWebLocke = async() =>{
       try {
-        const req = await navigator.wakeLock.request('screen');
-        setWakeLock(req)
+        wakeLockState = await navigator.wakeLock.request('screen');
       } catch (err) {
         return;
       }
   }
   const resetWebLock = ()=>{
-    wakeLock && wakeLock.release();
+    if (wakeLockState !== null) {
+       wakeLockState.release()
+        .then(() => {
+          wakeLockState = null;
+        })
+    }
 }
 return {onWebLocke,resetWebLock}
 }
