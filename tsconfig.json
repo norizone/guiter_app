@@ -19,7 +19,7 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true ,
     "jsxImportSource": "@emotion/react",
-    "types": ["@emotion/react/types/css-prop"], 
+    "types": ["@emotion/react/types/css-prop","dom-screen-wake-lock"], 
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
