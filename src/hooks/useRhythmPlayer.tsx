@@ -35,9 +35,9 @@ export const useRhythmPlayer = () => {
 
   const onPlay = async() => {
     if (isPlay) return;
+    await onWebLocke();
     setIsPlay(true);
     !rhythmType ? onPlayMetronome() : onPlayDrams();
-    await onWebLocke();
   };
 
   const onStop = () => {
