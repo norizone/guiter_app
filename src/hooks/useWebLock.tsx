@@ -1,22 +1,19 @@
-import { useRecoilState } from "recoil";
-
-import { WakeLockState } from "@/stores/WakeLockState";
+let wakeLockState:WakeLockSentinel|null = null;
 
 export const useWakeLock = () =>{
-  const [wakeLockState,setWakeLockState] = useRecoilState(WakeLockState)
   const onWebLocke = async() =>{
       try {
-        const req = await navigator.wakeLock.request('screen');
-        setWakeLockState(req)
+        wakeLockState = await navigator.wakeLock.request('screen');
       } catch (err) {
         return;
       }
   }
   const resetWebLock = ()=>{
+    console.log(wakeLockState)
     if (wakeLockState !== null) {
-      wakeLockState.release()
+       wakeLockState.release()
         .then(() => {
-          setWakeLockState(null);
+          wakeLockState = null;
         })
     }
 }
