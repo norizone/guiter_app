@@ -4,6 +4,7 @@ export const useWakeLock = () =>{
   const onWebLocke = async() =>{
       try {
         wakeLockState = await navigator.wakeLock.request('screen');
+        console.log(wakeLockState)
       } catch (err) {
         return;
       }
